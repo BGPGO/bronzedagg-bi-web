@@ -23,6 +23,7 @@ const SOURCES = [
   'pages-2.jsx',
   'pages-3.jsx',
   'pages-4.jsx',
+  'pages-5.jsx',
   'upsell-pages.jsx',
 ];
 
@@ -62,21 +63,24 @@ const PAGE_MODE_INJECT = `\n// Injetado por build-jsx.cjs a partir de bi.config.
   var useEffect = React.useEffect;
   var PAGE_LABELS = {
     overview: '01 Visão geral',
-    indicators: '02 Indicadores',
-    receita: '03 Receita',
-    despesa: '04 Despesa',
-    fluxo: '05 Fluxo de caixa',
-    tesouraria: '06 Tesouraria',
-    comparativo: '07 Comparativo',
-    relatorio: '08 Relatório IA',
-    faturamento_produto: '09 Faturamento por Produto',
-    curva_abc: '10 Curva ABC',
-    marketing: '11 Marketing ADS',
-    valuation: '12 Valuation',
-    hierarquia: '13 Hierarquia ADS',
-    detalhado: '14 Detalhado',
-    profunda_cliente: '15 Profunda Cliente',
-    crm: '16 CRM',
+    dre: '02 DRE',
+    faturamento_trinks: '03 Faturamento',
+    receita: '04 Receita',
+    despesa: '05 Despesa',
+    fluxo: '06 Fluxo de caixa',
+    tesouraria: '07 Tesouraria',
+    comparativo: '08 Comparativo',
+    relatorio: '09 Relatório IA',
+    lojas: '10 Unidades',
+    indicators: '11 Indicadores',
+    faturamento_produto: '12 Fat. Produto',
+    curva_abc: '13 Curva ABC',
+    marketing: '14 Marketing ADS',
+    valuation: '15 Valuation',
+    hierarquia: '16 Hierarquia ADS',
+    detalhado: '17 Detalhado',
+    profunda_cliente: '18 Profunda Cliente',
+    crm: '19 CRM',
   };
   function App() {
     var p = useState('overview'); var page = p[0], setPage = p[1];
@@ -111,6 +115,10 @@ const PAGE_MODE_INJECT = `\n// Injetado por build-jsx.cjs a partir de bi.config.
       return [];
     });
     var months = ms[0], setMonths = ms[1];
+
+    // Unidade filter
+    var un = useState(null);
+    var unidade = un[0], setUnidade = un[1];
 
     // BI export multi-tela: array de page-ids ou null. Quando setado, renderiza
     // todas as telas em sequencia + chama window.print() depois do layout pintar.
@@ -205,6 +213,8 @@ const PAGE_MODE_INJECT = `\n// Injetado por build-jsx.cjs a partir de bi.config.
 
     var PAGE_COMPS = {
       overview: PageOverview,
+      dre: PageDRE,
+      faturamento_trinks: PageFaturamentoTrinks,
       indicators: PageIndicators,
       receita: PageReceita,
       despesa: PageDespesa,
@@ -212,6 +222,7 @@ const PAGE_MODE_INJECT = `\n// Injetado por build-jsx.cjs a partir de bi.config.
       tesouraria: PageTesouraria,
       comparativo: PageComparativo,
       relatorio: PageRelatorio,
+      lojas: PageLojas,
       faturamento_produto: PageFaturamentoProduto,
       curva_abc: PageCurvaABC,
       marketing: PageMarketing,
@@ -239,8 +250,10 @@ const PAGE_MODE_INJECT = `\n// Injetado por build-jsx.cjs a partir de bi.config.
       // retrocompat: passa month (number) pras pages que nao migraram pra months.
       // single-mes -> number; multi/vazio -> 0 (= ano completo legado).
       month: months.length === 1 ? months[0] : 0,
-      drilldown: drilldown,
+      drilldown: unidade ? { type: 'unidade', value: unidade, label: unidade } : drilldown,
       setDrilldown: setDrilldown,
+      unidade: unidade,
+      setUnidade: setUnidade,
     };
 
     // Modo print multi-tela: renderiza todas as paginas selecionadas em sequencia
@@ -281,6 +294,8 @@ const PAGE_MODE_INJECT = `\n// Injetado por build-jsx.cjs a partir de bi.config.
             setYear={setYear}
             months={months}
             setMonths={setMonths}
+            unidade={unidade}
+            setUnidade={setUnidade}
           />
           <PageComp {...commonProps} />
         </div>

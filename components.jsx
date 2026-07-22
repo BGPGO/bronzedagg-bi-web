@@ -40,18 +40,19 @@ const Icon = ({ name, ...props }) => {
 const Sidebar = ({ active, onSelect, open }) => {
   const general = [
     { id: "overview", icon: "home", label: "Visão Geral" },
+    { id: "dre", icon: "fileText", label: "DRE" },
+    { id: "faturamento_trinks", icon: "money", label: "Faturamento" },
     { id: "receita", icon: "money", label: "Receita" },
     { id: "despesa", icon: "expense", label: "Despesa" },
     { id: "fluxo", icon: "flow", label: "Fluxo de Caixa" },
     { id: "tesouraria", icon: "treasury", label: "Tesouraria" },
     { id: "comparativo", icon: "compare", label: "Comparativo" },
     { id: "relatorio", icon: "fileText", label: "Relatório IA" },
-    { id: "valuation", icon: "invest", label: "Valuation" },
-    { id: "diary", icon: "diary", label: "Diário", badge: "EM BREVE" },
+    { id: "lojas", icon: "chart", label: "Unidades" },
   ];
   const others = [
     { id: "indicators", icon: "chart", label: "Indicadores" },
-    { id: "faturamento_produto", icon: "money", label: "Faturamento" },
+    { id: "faturamento_produto", icon: "money", label: "Fat. Produto" },
     { id: "curva_abc", icon: "chart", label: "Curva ABC" },
     { id: "marketing", icon: "invest", label: "Marketing ADS" },
     { id: "hierarquia", icon: "chart", label: "Hierarquia ADS" },
@@ -152,6 +153,22 @@ const StatusFilterSeg = ({ value, onChange }) => (
     ))}
   </div>
 );
+
+const UnidadeSelect = ({ value, onChange }) => {
+  const unidades = (window.getUnidades && window.getUnidades()) || [];
+  if (!unidades.length) return null;
+  return (
+    <select
+      className="header-year"
+      value={value || ""}
+      onChange={e => onChange(e.target.value || null)}
+      title="Filtrar por unidade"
+    >
+      <option value="">Todas unidades</option>
+      {unidades.map(u => <option key={u} value={u}>{u}</option>)}
+    </select>
+  );
+};
 
 const YearSelect = ({ value, onChange, available }) => {
   const years = available && available.length ? available : [value];
@@ -361,7 +378,7 @@ const StatusEmptyHint = ({ statusFilter, bit }) => {
 
 // Header: breadcrumb + YearSelect + MultiMonthSelect + StatusFilter
 // months = array de meses 1-12 (vazio = ano completo). Retrocompat: aceita number.
-const Header = ({ page, onToggleSidebar, statusFilter, setStatusFilter, year, setYear, months, setMonths }) => {
+const Header = ({ page, onToggleSidebar, statusFilter, setStatusFilter, year, setYear, months, setMonths, unidade, setUnidade }) => {
   return (
     <header className="header">
       <button className="hd-icon-btn hd-menu-btn" title="Menu" onClick={onToggleSidebar}><Icon name="menu" /></button>
@@ -373,6 +390,7 @@ const Header = ({ page, onToggleSidebar, statusFilter, setStatusFilter, year, se
         <b>{PAGE_TITLES[page] || "Visão Geral"}</b>
       </div>
       <div style={{ flex: 1 }} />
+      {setUnidade && <UnidadeSelect value={unidade} onChange={setUnidade} />}
       {setYear && <YearSelect value={year} onChange={setYear} available={window.AVAILABLE_YEARS} />}
       {setMonths && <MultiMonthSelect value={months} onChange={setMonths} />}
       {setStatusFilter && <StatusFilterSeg value={statusFilter} onChange={setStatusFilter} />}
@@ -1098,6 +1116,9 @@ function applyDrilldown(extrato, dd) {
   }
   if (dd.type === "cliente" || dd.type === "fornecedor") {
     return extrato.filter(e => e[3] === dd.value);
+  }
+  if (dd.type === "unidade") {
+    return extrato.filter(e => e[1] === dd.value);
   }
   return extrato;
 }

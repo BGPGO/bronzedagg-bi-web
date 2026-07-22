@@ -225,6 +225,49 @@ function normalize(t, kind) {
 const TRANSFERENCIA_RE = /transfer[eê]ncia.*?(entre\s+conta|de\s+entrada|de\s+sa[ií]da)/i;
 
 function normalizeMovimento(m) {
+  // --- Formato canonical (adapters: bronzedagg, manual-xlsx, etc) ---
+  if (m.fonte && m.natureza && m.data_competencia !== undefined) {
+    const status = (m.status || '').toUpperCase();
+    const realizado = m.realizado === true || status === 'PAGO' || status === 'RECEBIDO';
+    const cancelado = status === 'CANCELADO';
+    if (cancelado) return null;
+    const categoria = m.categoria || 'Sem categoria';
+    // Filtrar transferências
+    if (FILTRAR_TRANSFERENCIAS && TRANSFERENCIA_RE.test(categoria)) return null;
+    if (m.is_transferencia) return null;
+    // Aceitar ISO (YYYY-MM-DD) e BR (dd/mm/yyyy)
+    const parseAny = (v) => {
+      if (!v) return null;
+      const iso = String(v).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+      return parseBR(v);
+    };
+    const dataComp = parseAny(m.data_competencia) || parseAny(m.data_emissao);
+    const dataPago = parseAny(m.data_pagamento) || dataComp;
+    const dataVenc = parseAny(m.data_vencimento) || dataComp;
+    const data_efetiva = realizado ? (dataPago || dataVenc) : (dataVenc || dataComp);
+    if (!data_efetiva) return null;
+    const valor = num(m.valor_total);
+    if (!valor) return null;
+    return {
+      id: m.id || null,
+      kind: m.natureza === 'R' ? 'receita' : 'despesa',
+      cliente: m.cliente || 'Sem cliente',
+      categoria,
+      centroCusto: m.centro_custo || null,
+      data_venc: dataVenc,
+      data_efetiva,
+      valor: Math.abs(valor),
+      valor_signed: valor,
+      status,
+      realizado,
+      cancelado: false,
+      grupo: '',
+      nf: '',
+      parcela: '',
+    };
+  }
+  // --- Formato Omie (legacy) ---
   const d = m.detalhes || {};
   const r = m.resumo || {};
   const status = (d.cStatus || '').toUpperCase();
@@ -532,6 +575,7 @@ const meta = {
     departamentos: departamentos.length,
     clientes: clientes.length,
   },
+  categoria_overrides: (_cfg.meta && _cfg.meta.categoria_overrides) || {},
 };
 
 // Posicao caixa: nao temos dados de saldo bancario direto. Usamos saldo_acumulado do realizado.
@@ -707,6 +751,7 @@ function filterTx(allTx, statusFilter, drilldown) {
     else if (drilldown.type === 'categoria') out = out.filter(r => r[3] === drilldown.value);
     else if (drilldown.type === 'cliente') out = out.filter(r => r[0] === 'r' && r[4] === drilldown.value);
     else if (drilldown.type === 'fornecedor') out = out.filter(r => r[0] === 'd' && r[7] === drilldown.value);
+    else if (drilldown.type === 'unidade') out = out.filter(r => r[8] === drilldown.value);
   }
   return out;
 }
@@ -773,6 +818,11 @@ window.BUDGET_BY_MONTH = ${JSON.stringify((() => {
 })())};
 window.BIT_META = META;
 window.ALL_TX = ALL_TX;
+window.getUnidades = function() {
+  const set = new Set();
+  for (const row of ALL_TX) { if (row[8]) set.add(row[8]); }
+  return [...set].sort();
+};
 window.REF_YEAR = REF_YEAR;
 window.AVAILABLE_YEARS = AVAILABLE_YEARS;
 window.aggregateTx = aggregateTx;

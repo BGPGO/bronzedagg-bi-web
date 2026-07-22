@@ -9,6 +9,7 @@ module.exports = {
   'conta-azul': require('./conta-azul.cjs'),
   'manual-xlsx': require('./manual-xlsx.cjs'),
   'fin40': require('./fin40.cjs'),
+  'bronzedagg': require('./bronzedagg.cjs'),
   // 'bling': require('./bling.cjs'),         // TODO
   // 'tiny': require('./tiny.cjs'),           // TODO
   // 'f360': require('./f360.cjs'),           // TODO
