@@ -1,0 +1,872 @@
+[
+  {
+    "codigo": "4Cinco",
+    "nome_fantasia": "4Cinco",
+    "razao_social": "4Cinco"
+  },
+  {
+    "codigo": "ALBERTO ESTELLER LTDA",
+    "nome_fantasia": "ALBERTO ESTELLER LTDA",
+    "razao_social": "ALBERTO ESTELLER LTDA"
+  },
+  {
+    "codigo": "ALINE ZANCHI DA SILVA",
+    "nome_fantasia": "ALINE ZANCHI DA SILVA",
+    "razao_social": "ALINE ZANCHI DA SILVA"
+  },
+  {
+    "codigo": "Alcance Soluções de Limpeza",
+    "nome_fantasia": "Alcance Soluções de Limpeza",
+    "razao_social": "Alcance Soluções de Limpeza"
+  },
+  {
+    "codigo": "Aldeia Software",
+    "nome_fantasia": "Aldeia Software",
+    "razao_social": "Aldeia Software"
+  },
+  {
+    "codigo": "Alice Xavier Antunes",
+    "nome_fantasia": "Alice Xavier Antunes",
+    "razao_social": "Alice Xavier Antunes"
+  },
+  {
+    "codigo": "Aline Grazziotin",
+    "nome_fantasia": "Aline Grazziotin",
+    "razao_social": "Aline Grazziotin"
+  },
+  {
+    "codigo": "Allianz Seguros S.A.",
+    "nome_fantasia": "Allianz Seguros S.A.",
+    "razao_social": "Allianz Seguros S.A."
+  },
+  {
+    "codigo": "Alto Cinco",
+    "nome_fantasia": "Alto Cinco",
+    "razao_social": "Alto Cinco"
+  },
+  {
+    "codigo": "Amanda Barbosa Alves",
+    "nome_fantasia": "Amanda Barbosa Alves",
+    "razao_social": "Amanda Barbosa Alves"
+  },
+  {
+    "codigo": "Angela",
+    "nome_fantasia": "Angela",
+    "razao_social": "Angela"
+  },
+  {
+    "codigo": "Angélica Silva Nogueira",
+    "nome_fantasia": "Angélica Silva Nogueira",
+    "razao_social": "Angélica Silva Nogueira"
+  },
+  {
+    "codigo": "Aptidão - Serviços de Medicina",
+    "nome_fantasia": "Aptidão - Serviços de Medicina",
+    "razao_social": "Aptidão - Serviços de Medicina"
+  },
+  {
+    "codigo": "Ariel de Souza Machado",
+    "nome_fantasia": "Ariel de Souza Machado",
+    "razao_social": "Ariel de Souza Machado"
+  },
+  {
+    "codigo": "Azul Cargo",
+    "nome_fantasia": "Azul Cargo",
+    "razao_social": "Azul Cargo"
+  },
+  {
+    "codigo": "BERTUZZI GESTAO PATRIMONIAL",
+    "nome_fantasia": "BERTUZZI GESTAO PATRIMONIAL",
+    "razao_social": "BERTUZZI GESTAO PATRIMONIAL"
+  },
+  {
+    "codigo": "BRONZE DA GG ITAIM",
+    "nome_fantasia": "BRONZE DA GG ITAIM",
+    "razao_social": "BRONZE DA GG ITAIM"
+  },
+  {
+    "codigo": "BRONZE DA GG LTDA ME",
+    "nome_fantasia": "BRONZE DA GG LTDA ME",
+    "razao_social": "BRONZE DA GG LTDA ME"
+  },
+  {
+    "codigo": "BRONZE DA GG MENINO DEUS LTDA",
+    "nome_fantasia": "BRONZE DA GG MENINO DEUS LTDA",
+    "razao_social": "BRONZE DA GG MENINO DEUS LTDA"
+  },
+  {
+    "codigo": "BRONZE MOINHOS DE VENTO",
+    "nome_fantasia": "BRONZE MOINHOS DE VENTO",
+    "razao_social": "BRONZE MOINHOS DE VENTO"
+  },
+  {
+    "codigo": "BRUNO MORAES TOLEDO 02466513005",
+    "nome_fantasia": "BRUNO MORAES TOLEDO 02466513005",
+    "razao_social": "BRUNO MORAES TOLEDO 02466513005"
+  },
+  {
+    "codigo": "Barth Sacolas",
+    "nome_fantasia": "Barth Sacolas",
+    "razao_social": "Barth Sacolas"
+  },
+  {
+    "codigo": "Beatriz Baptista de Souza Lima",
+    "nome_fantasia": "Beatriz Baptista de Souza Lima",
+    "razao_social": "Beatriz Baptista de Souza Lima"
+  },
+  {
+    "codigo": "Belface",
+    "nome_fantasia": "Belface",
+    "razao_social": "Belface"
+  },
+  {
+    "codigo": "Benedito Ezequiel",
+    "nome_fantasia": "Benedito Ezequiel",
+    "razao_social": "Benedito Ezequiel"
+  },
+  {
+    "codigo": "Bling",
+    "nome_fantasia": "Bling",
+    "razao_social": "Bling"
+  },
+  {
+    "codigo": "Blumenstrauss",
+    "nome_fantasia": "Blumenstrauss",
+    "razao_social": "Blumenstrauss"
+  },
+  {
+    "codigo": "Bradesco Saúde",
+    "nome_fantasia": "Bradesco Saúde",
+    "razao_social": "Bradesco Saúde"
+  },
+  {
+    "codigo": "Bronze da GG - Alphaville",
+    "nome_fantasia": "Bronze da GG - Alphaville",
+    "razao_social": "Bronze da GG - Alphaville"
+  },
+  {
+    "codigo": "Bruno Moraes Toledo",
+    "nome_fantasia": "Bruno Moraes Toledo",
+    "razao_social": "Bruno Moraes Toledo"
+  },
+  {
+    "codigo": "By Clean Lavanderia",
+    "nome_fantasia": "By Clean Lavanderia",
+    "razao_social": "By Clean Lavanderia"
+  },
+  {
+    "codigo": "C Schein e Cia LTDA- ME",
+    "nome_fantasia": "C Schein e Cia LTDA- ME",
+    "razao_social": "C Schein e Cia LTDA- ME"
+  },
+  {
+    "codigo": "CLEAN EXPRESS LAVANDERIAS LTDA",
+    "nome_fantasia": "CLEAN EXPRESS LAVANDERIAS LTDA",
+    "razao_social": "CLEAN EXPRESS LAVANDERIAS LTDA"
+  },
+  {
+    "codigo": "CQ Modas",
+    "nome_fantasia": "CQ Modas",
+    "razao_social": "CQ Modas"
+  },
+  {
+    "codigo": "Cafés Illy",
+    "nome_fantasia": "Cafés Illy",
+    "razao_social": "Cafés Illy"
+  },
+  {
+    "codigo": "Camicado",
+    "nome_fantasia": "Camicado",
+    "razao_social": "Camicado"
+  },
+  {
+    "codigo": "Carlos Gomes",
+    "nome_fantasia": "Carlos Gomes",
+    "razao_social": "Carlos Gomes"
+  },
+  {
+    "codigo": "Carolina Machado Simão LTDA",
+    "nome_fantasia": "Carolina Machado Simão LTDA",
+    "razao_social": "Carolina Machado Simão LTDA"
+  },
+  {
+    "codigo": "Carolina Simao - BGG Brasilia",
+    "nome_fantasia": "Carolina Simao - BGG Brasilia",
+    "razao_social": "Carolina Simao - BGG Brasilia"
+  },
+  {
+    "codigo": "Casa de Bolos",
+    "nome_fantasia": "Casa de Bolos",
+    "razao_social": "Casa de Bolos"
+  },
+  {
+    "codigo": "Casa do Papel",
+    "nome_fantasia": "Casa do Papel",
+    "razao_social": "Casa do Papel"
+  },
+  {
+    "codigo": "Case",
+    "nome_fantasia": "Case",
+    "razao_social": "Case"
+  },
+  {
+    "codigo": "Castelli Contabilidade",
+    "nome_fantasia": "Castelli Contabilidade",
+    "razao_social": "Castelli Contabilidade"
+  },
+  {
+    "codigo": "Central do Franqueado",
+    "nome_fantasia": "Central do Franqueado",
+    "razao_social": "Central do Franqueado"
+  },
+  {
+    "codigo": "Centro de Beleza Pri Tavares",
+    "nome_fantasia": "Centro de Beleza Pri Tavares",
+    "razao_social": "Centro de Beleza Pri Tavares"
+  },
+  {
+    "codigo": "Clarati Comercio e Decorações de Flores e Plantas LTDA",
+    "nome_fantasia": "Clarati Comercio e Decorações de Flores e Plantas LTDA",
+    "razao_social": "Clarati Comercio e Decorações de Flores e Plantas LTDA"
+  },
+  {
+    "codigo": "Claro",
+    "nome_fantasia": "Claro",
+    "razao_social": "Claro"
+  },
+  {
+    "codigo": "Claudia Fontana",
+    "nome_fantasia": "Claudia Fontana",
+    "razao_social": "Claudia Fontana"
+  },
+  {
+    "codigo": "Clientes diversos",
+    "nome_fantasia": "Clientes diversos",
+    "razao_social": "Clientes diversos"
+  },
+  {
+    "codigo": "CompuSeg",
+    "nome_fantasia": "CompuSeg",
+    "razao_social": "CompuSeg"
+  },
+  {
+    "codigo": "Condomínio Miami Business",
+    "nome_fantasia": "Condomínio Miami Business",
+    "razao_social": "Condomínio Miami Business"
+  },
+  {
+    "codigo": "Correios",
+    "nome_fantasia": "Correios",
+    "razao_social": "Correios"
+  },
+  {
+    "codigo": "Cássia Rejane Furmann",
+    "nome_fantasia": "Cássia Rejane Furmann",
+    "razao_social": "Cássia Rejane Furmann"
+  },
+  {
+    "codigo": "Danillo Newton Paulo",
+    "nome_fantasia": "Danillo Newton Paulo",
+    "razao_social": "Danillo Newton Paulo"
+  },
+  {
+    "codigo": "Debora Laurent Dias Dick",
+    "nome_fantasia": "Debora Laurent Dias Dick",
+    "razao_social": "Debora Laurent Dias Dick"
+  },
+  {
+    "codigo": "Diandra",
+    "nome_fantasia": "Diandra",
+    "razao_social": "Diandra"
+  },
+  {
+    "codigo": "Dismarina Transportes",
+    "nome_fantasia": "Dismarina Transportes",
+    "razao_social": "Dismarina Transportes"
+  },
+  {
+    "codigo": "Divina Vaga",
+    "nome_fantasia": "Divina Vaga",
+    "razao_social": "Divina Vaga"
+  },
+  {
+    "codigo": "Doany dos Santos Melo",
+    "nome_fantasia": "Doany dos Santos Melo",
+    "razao_social": "Doany dos Santos Melo"
+  },
+  {
+    "codigo": "EDUARDA SUED",
+    "nome_fantasia": "EDUARDA SUED",
+    "razao_social": "EDUARDA SUED"
+  },
+  {
+    "codigo": "ETIENNE HEINZE DURO",
+    "nome_fantasia": "ETIENNE HEINZE DURO",
+    "razao_social": "ETIENNE HEINZE DURO"
+  },
+  {
+    "codigo": "EVA CRISTINA",
+    "nome_fantasia": "EVA CRISTINA",
+    "razao_social": "EVA CRISTINA"
+  },
+  {
+    "codigo": "Easy Lips",
+    "nome_fantasia": "Easy Lips",
+    "razao_social": "Easy Lips"
+  },
+  {
+    "codigo": "Eduarda  Galvani",
+    "nome_fantasia": "Eduarda  Galvani",
+    "razao_social": "Eduarda  Galvani"
+  },
+  {
+    "codigo": "Eletropaulo",
+    "nome_fantasia": "Eletropaulo",
+    "razao_social": "Eletropaulo"
+  },
+  {
+    "codigo": "Eliane Soares",
+    "nome_fantasia": "Eliane Soares",
+    "razao_social": "Eliane Soares"
+  },
+  {
+    "codigo": "Elissa de Souza Teixeira",
+    "nome_fantasia": "Elissa de Souza Teixeira",
+    "razao_social": "Elissa de Souza Teixeira"
+  },
+  {
+    "codigo": "Elyplast",
+    "nome_fantasia": "Elyplast",
+    "razao_social": "Elyplast"
+  },
+  {
+    "codigo": "Empresa de Limpeza Maria Brasileira",
+    "nome_fantasia": "Empresa de Limpeza Maria Brasileira",
+    "razao_social": "Empresa de Limpeza Maria Brasileira"
+  },
+  {
+    "codigo": "Enel",
+    "nome_fantasia": "Enel",
+    "razao_social": "Enel"
+  },
+  {
+    "codigo": "Essencial Convites e Impressos Ltda – ME",
+    "nome_fantasia": "Essencial Convites e Impressos Ltda – ME",
+    "razao_social": "Essencial Convites e Impressos Ltda – ME"
+  },
+  {
+    "codigo": "Estilo XP Mídia Digital",
+    "nome_fantasia": "Estilo XP Mídia Digital",
+    "razao_social": "Estilo XP Mídia Digital"
+  },
+  {
+    "codigo": "Exhimia Home",
+    "nome_fantasia": "Exhimia Home",
+    "razao_social": "Exhimia Home"
+  },
+  {
+    "codigo": "FERNANDA PAVANELO DA SILVA BARTH",
+    "nome_fantasia": "FERNANDA PAVANELO DA SILVA BARTH",
+    "razao_social": "FERNANDA PAVANELO DA SILVA BARTH"
+  },
+  {
+    "codigo": "FILOBELLA COMERCIO DE VINHOS",
+    "nome_fantasia": "FILOBELLA COMERCIO DE VINHOS",
+    "razao_social": "FILOBELLA COMERCIO DE VINHOS"
+  },
+  {
+    "codigo": "FRANQUIA PERDIZES",
+    "nome_fantasia": "FRANQUIA PERDIZES",
+    "razao_social": "FRANQUIA PERDIZES"
+  },
+  {
+    "codigo": "Faturamento Trinks",
+    "nome_fantasia": "Faturamento Trinks",
+    "razao_social": "Faturamento Trinks"
+  },
+  {
+    "codigo": "Ferragem Universal Matriz",
+    "nome_fantasia": "Ferragem Universal Matriz",
+    "razao_social": "Ferragem Universal Matriz"
+  },
+  {
+    "codigo": "Filobella",
+    "nome_fantasia": "Filobella",
+    "razao_social": "Filobella"
+  },
+  {
+    "codigo": "Gabriela Foktz",
+    "nome_fantasia": "Gabriela Foktz",
+    "razao_social": "Gabriela Foktz"
+  },
+  {
+    "codigo": "Gabrielle Nunes Escher",
+    "nome_fantasia": "Gabrielle Nunes Escher",
+    "razao_social": "Gabrielle Nunes Escher"
+  },
+  {
+    "codigo": "Galeria dos pães",
+    "nome_fantasia": "Galeria dos pães",
+    "razao_social": "Galeria dos pães"
+  },
+  {
+    "codigo": "Galvão & Petter Advogados",
+    "nome_fantasia": "Galvão & Petter Advogados",
+    "razao_social": "Galvão & Petter Advogados"
+  },
+  {
+    "codigo": "Giovana Walper Duval",
+    "nome_fantasia": "Giovana Walper Duval",
+    "razao_social": "Giovana Walper Duval"
+  },
+  {
+    "codigo": "Giovana Walper Duval ME",
+    "nome_fantasia": "Giovana Walper Duval ME",
+    "razao_social": "Giovana Walper Duval ME"
+  },
+  {
+    "codigo": "Giovanna Victoria Santos Soares",
+    "nome_fantasia": "Giovanna Victoria Santos Soares",
+    "razao_social": "Giovanna Victoria Santos Soares"
+  },
+  {
+    "codigo": "Glamour Itaim",
+    "nome_fantasia": "Glamour Itaim",
+    "razao_social": "Glamour Itaim"
+  },
+  {
+    "codigo": "Golden Branding",
+    "nome_fantasia": "Golden Branding",
+    "razao_social": "Golden Branding"
+  },
+  {
+    "codigo": "Green Universe",
+    "nome_fantasia": "Green Universe",
+    "razao_social": "Green Universe"
+  },
+  {
+    "codigo": "Guarida Imoveis",
+    "nome_fantasia": "Guarida Imoveis",
+    "razao_social": "Guarida Imoveis"
+  },
+  {
+    "codigo": "HIGHFY MARKETING E TALENTOS - Jordanna Maia",
+    "nome_fantasia": "HIGHFY MARKETING E TALENTOS - Jordanna Maia",
+    "razao_social": "HIGHFY MARKETING E TALENTOS - Jordanna Maia"
+  },
+  {
+    "codigo": "INCOM INDUSTRIAL EIRELI",
+    "nome_fantasia": "INCOM INDUSTRIAL EIRELI",
+    "razao_social": "INCOM INDUSTRIAL EIRELI"
+  },
+  {
+    "codigo": "Imprima Eireli",
+    "nome_fantasia": "Imprima Eireli",
+    "razao_social": "Imprima Eireli"
+  },
+  {
+    "codigo": "Isabela Zietolie",
+    "nome_fantasia": "Isabela Zietolie",
+    "razao_social": "Isabela Zietolie"
+  },
+  {
+    "codigo": "Itaú",
+    "nome_fantasia": "Itaú",
+    "razao_social": "Itaú"
+  },
+  {
+    "codigo": "JCS BROTHERS",
+    "nome_fantasia": "JCS BROTHERS",
+    "razao_social": "JCS BROTHERS"
+  },
+  {
+    "codigo": "JONATASBERNARDINORODRIGUESDASILVA",
+    "nome_fantasia": "JONATASBERNARDINORODRIGUESDASILVA",
+    "razao_social": "JONATASBERNARDINORODRIGUESDASILVA"
+  },
+  {
+    "codigo": "JULIA DE OLIVEIRA DOUGLAS",
+    "nome_fantasia": "JULIA DE OLIVEIRA DOUGLAS",
+    "razao_social": "JULIA DE OLIVEIRA DOUGLAS"
+  },
+  {
+    "codigo": "Jardim Spa",
+    "nome_fantasia": "Jardim Spa",
+    "razao_social": "Jardim Spa"
+  },
+  {
+    "codigo": "Julia Kaster Schwantz",
+    "nome_fantasia": "Julia Kaster Schwantz",
+    "razao_social": "Julia Kaster Schwantz"
+  },
+  {
+    "codigo": "Julia Prestes da Silva",
+    "nome_fantasia": "Julia Prestes da Silva",
+    "razao_social": "Julia Prestes da Silva"
+  },
+  {
+    "codigo": "Juliana Maria Costamilan",
+    "nome_fantasia": "Juliana Maria Costamilan",
+    "razao_social": "Juliana Maria Costamilan"
+  },
+  {
+    "codigo": "Juliana Pimenta Rodrigues",
+    "nome_fantasia": "Juliana Pimenta Rodrigues",
+    "razao_social": "Juliana Pimenta Rodrigues"
+  },
+  {
+    "codigo": "KOHMAR IND. COM. DE CONFECCOES S.A",
+    "nome_fantasia": "KOHMAR IND. COM. DE CONFECCOES S.A",
+    "razao_social": "KOHMAR IND. COM. DE CONFECCOES S.A"
+  },
+  {
+    "codigo": "Kalunga",
+    "nome_fantasia": "Kalunga",
+    "razao_social": "Kalunga"
+  },
+  {
+    "codigo": "Kinbox",
+    "nome_fantasia": "Kinbox",
+    "razao_social": "Kinbox"
+  },
+  {
+    "codigo": "LABOTERRA INDUSTRIA E COMERCIO DE COSMETICOS LTDA",
+    "nome_fantasia": "LABOTERRA INDUSTRIA E COMERCIO DE COSMETICOS LTDA",
+    "razao_social": "LABOTERRA INDUSTRIA E COMERCIO DE COSMETICOS LTDA"
+  },
+  {
+    "codigo": "Laboterra",
+    "nome_fantasia": "Laboterra",
+    "razao_social": "Laboterra"
+  },
+  {
+    "codigo": "Larissa Medeiros Dias",
+    "nome_fantasia": "Larissa Medeiros Dias",
+    "razao_social": "Larissa Medeiros Dias"
+  },
+  {
+    "codigo": "Lauri Segurança",
+    "nome_fantasia": "Lauri Segurança",
+    "razao_social": "Lauri Segurança"
+  },
+  {
+    "codigo": "Lav&Lev",
+    "nome_fantasia": "Lav&Lev",
+    "razao_social": "Lav&Lev"
+  },
+  {
+    "codigo": "Lavanderia Donna LTDA",
+    "nome_fantasia": "Lavanderia Donna LTDA",
+    "razao_social": "Lavanderia Donna LTDA"
+  },
+  {
+    "codigo": "Lavanderia Menino Deus",
+    "nome_fantasia": "Lavanderia Menino Deus",
+    "razao_social": "Lavanderia Menino Deus"
+  },
+  {
+    "codigo": "Lavandery",
+    "nome_fantasia": "Lavandery",
+    "razao_social": "Lavandery"
+  },
+  {
+    "codigo": "LeadPak",
+    "nome_fantasia": "LeadPak",
+    "razao_social": "LeadPak"
+  },
+  {
+    "codigo": "Lepok",
+    "nome_fantasia": "Lepok",
+    "razao_social": "Lepok"
+  },
+  {
+    "codigo": "Let's Eat It",
+    "nome_fantasia": "Let's Eat It",
+    "razao_social": "Let's Eat It"
+  },
+  {
+    "codigo": "Leticia Catarina",
+    "nome_fantasia": "Leticia Catarina",
+    "razao_social": "Leticia Catarina"
+  },
+  {
+    "codigo": "Linna - Haussen Artesanato e Festa",
+    "nome_fantasia": "Linna - Haussen Artesanato e Festa",
+    "razao_social": "Linna - Haussen Artesanato e Festa"
+  },
+  {
+    "codigo": "Loja das etiquetas",
+    "nome_fantasia": "Loja das etiquetas",
+    "razao_social": "Loja das etiquetas"
+  },
+  {
+    "codigo": "Lojas Sumire",
+    "nome_fantasia": "Lojas Sumire",
+    "razao_social": "Lojas Sumire"
+  },
+  {
+    "codigo": "Magazine Luiza",
+    "nome_fantasia": "Magazine Luiza",
+    "razao_social": "Magazine Luiza"
+  },
+  {
+    "codigo": "Magazine Médica",
+    "nome_fantasia": "Magazine Médica",
+    "razao_social": "Magazine Médica"
+  },
+  {
+    "codigo": "Maitê Bolzan",
+    "nome_fantasia": "Maitê Bolzan",
+    "razao_social": "Maitê Bolzan"
+  },
+  {
+    "codigo": "Manoela Fontoura",
+    "nome_fantasia": "Manoela Fontoura",
+    "razao_social": "Manoela Fontoura"
+  },
+  {
+    "codigo": "Manoella",
+    "nome_fantasia": "Manoella",
+    "razao_social": "Manoella"
+  },
+  {
+    "codigo": "Marcela",
+    "nome_fantasia": "Marcela",
+    "razao_social": "Marcela"
+  },
+  {
+    "codigo": "Marcela Motta",
+    "nome_fantasia": "Marcela Motta",
+    "razao_social": "Marcela Motta"
+  },
+  {
+    "codigo": "Marcenaria Oliveira e Cruz LTDA",
+    "nome_fantasia": "Marcenaria Oliveira e Cruz LTDA",
+    "razao_social": "Marcenaria Oliveira e Cruz LTDA"
+  },
+  {
+    "codigo": "Maria Roseli - Boleira",
+    "nome_fantasia": "Maria Roseli - Boleira",
+    "razao_social": "Maria Roseli - Boleira"
+  },
+  {
+    "codigo": "Marina Braga",
+    "nome_fantasia": "Marina Braga",
+    "razao_social": "Marina Braga"
+  },
+  {
+    "codigo": "Masterpumps",
+    "nome_fantasia": "Masterpumps",
+    "razao_social": "Masterpumps"
+  },
+  {
+    "codigo": "Mauren - BGG Lajeado (SPESSATO)",
+    "nome_fantasia": "Mauren - BGG Lajeado (SPESSATO)",
+    "razao_social": "Mauren - BGG Lajeado (SPESSATO)"
+  },
+  {
+    "codigo": "Meia Hora",
+    "nome_fantasia": "Meia Hora",
+    "razao_social": "Meia Hora"
+  },
+  {
+    "codigo": "Mercado Livre",
+    "nome_fantasia": "Mercado Livre",
+    "razao_social": "Mercado Livre"
+  },
+  {
+    "codigo": "Mirella Carvalho Pereira",
+    "nome_fantasia": "Mirella Carvalho Pereira",
+    "razao_social": "Mirella Carvalho Pereira"
+  },
+  {
+    "codigo": "Misses Cake",
+    "nome_fantasia": "Misses Cake",
+    "razao_social": "Misses Cake"
+  },
+  {
+    "codigo": "NIC.BR",
+    "nome_fantasia": "NIC.BR",
+    "razao_social": "NIC.BR"
+  },
+  {
+    "codigo": "Noemia Imobiliária",
+    "nome_fantasia": "Noemia Imobiliária",
+    "razao_social": "Noemia Imobiliária"
+  },
+  {
+    "codigo": "Office Copy",
+    "nome_fantasia": "Office Copy",
+    "razao_social": "Office Copy"
+  },
+  {
+    "codigo": "Oh Bruder",
+    "nome_fantasia": "Oh Bruder",
+    "razao_social": "Oh Bruder"
+  },
+  {
+    "codigo": "Patricia Rodrigues Campos",
+    "nome_fantasia": "Patricia Rodrigues Campos",
+    "razao_social": "Patricia Rodrigues Campos"
+  },
+  {
+    "codigo": "Pino Neon",
+    "nome_fantasia": "Pino Neon",
+    "razao_social": "Pino Neon"
+  },
+  {
+    "codigo": "Premium RH",
+    "nome_fantasia": "Premium RH",
+    "razao_social": "Premium RH"
+  },
+  {
+    "codigo": "Printi",
+    "nome_fantasia": "Printi",
+    "razao_social": "Printi"
+  },
+  {
+    "codigo": "Produtos de Beleza Glamour",
+    "nome_fantasia": "Produtos de Beleza Glamour",
+    "razao_social": "Produtos de Beleza Glamour"
+  },
+  {
+    "codigo": "Qualigrafica",
+    "nome_fantasia": "Qualigrafica",
+    "razao_social": "Qualigrafica"
+  },
+  {
+    "codigo": "REAL BROKERS",
+    "nome_fantasia": "REAL BROKERS",
+    "razao_social": "REAL BROKERS"
+  },
+  {
+    "codigo": "Rafaela Jaeger Duarte",
+    "nome_fantasia": "Rafaela Jaeger Duarte",
+    "razao_social": "Rafaela Jaeger Duarte"
+  },
+  {
+    "codigo": "Rappi",
+    "nome_fantasia": "Rappi",
+    "razao_social": "Rappi"
+  },
+  {
+    "codigo": "Rede Itaú",
+    "nome_fantasia": "Rede Itaú",
+    "razao_social": "Rede Itaú"
+  },
+  {
+    "codigo": "Rodrigo Marrano Fotógrafo",
+    "nome_fantasia": "Rodrigo Marrano Fotógrafo",
+    "razao_social": "Rodrigo Marrano Fotógrafo"
+  },
+  {
+    "codigo": "Rosa Maria Wasem",
+    "nome_fantasia": "Rosa Maria Wasem",
+    "razao_social": "Rosa Maria Wasem"
+  },
+  {
+    "codigo": "Rudinei",
+    "nome_fantasia": "Rudinei",
+    "razao_social": "Rudinei"
+  },
+  {
+    "codigo": "SAC 2",
+    "nome_fantasia": "SAC 2",
+    "razao_social": "SAC 2"
+  },
+  {
+    "codigo": "SCHERER AIRBRUSH TAN COSMETICOS LTDA",
+    "nome_fantasia": "SCHERER AIRBRUSH TAN COSMETICOS LTDA",
+    "razao_social": "SCHERER AIRBRUSH TAN COSMETICOS LTDA"
+  },
+  {
+    "codigo": "SafeWeb",
+    "nome_fantasia": "SafeWeb",
+    "razao_social": "SafeWeb"
+  },
+  {
+    "codigo": "Shopee",
+    "nome_fantasia": "Shopee",
+    "razao_social": "Shopee"
+  },
+  {
+    "codigo": "Spotify",
+    "nome_fantasia": "Spotify",
+    "razao_social": "Spotify"
+  },
+  {
+    "codigo": "TRANSPORTES PANEX",
+    "nome_fantasia": "TRANSPORTES PANEX",
+    "razao_social": "TRANSPORTES PANEX"
+  },
+  {
+    "codigo": "Taina Dias de Melo",
+    "nome_fantasia": "Taina Dias de Melo",
+    "razao_social": "Taina Dias de Melo"
+  },
+  {
+    "codigo": "Telefonica Brasil S.A.",
+    "nome_fantasia": "Telefonica Brasil S.A.",
+    "razao_social": "Telefonica Brasil S.A."
+  },
+  {
+    "codigo": "Thayna Neves Franco",
+    "nome_fantasia": "Thayna Neves Franco",
+    "razao_social": "Thayna Neves Franco"
+  },
+  {
+    "codigo": "Tok Stok",
+    "nome_fantasia": "Tok Stok",
+    "razao_social": "Tok Stok"
+  },
+  {
+    "codigo": "Trinks",
+    "nome_fantasia": "Trinks",
+    "razao_social": "Trinks"
+  },
+  {
+    "codigo": "Valkiria",
+    "nome_fantasia": "Valkiria",
+    "razao_social": "Valkiria"
+  },
+  {
+    "codigo": "Vekka Comercio de Cosmeticos",
+    "nome_fantasia": "Vekka Comercio de Cosmeticos",
+    "razao_social": "Vekka Comercio de Cosmeticos"
+  },
+  {
+    "codigo": "Vislu Comercio de Embalagens",
+    "nome_fantasia": "Vislu Comercio de Embalagens",
+    "razao_social": "Vislu Comercio de Embalagens"
+  },
+  {
+    "codigo": "Vitoria",
+    "nome_fantasia": "Vitoria",
+    "razao_social": "Vitoria"
+  },
+  {
+    "codigo": "Vittoria Mello schultz",
+    "nome_fantasia": "Vittoria Mello schultz",
+    "razao_social": "Vittoria Mello schultz"
+  },
+  {
+    "codigo": "Vitória Souza",
+    "nome_fantasia": "Vitória Souza",
+    "razao_social": "Vitória Souza"
+  },
+  {
+    "codigo": "Vivo Operadora",
+    "nome_fantasia": "Vivo Operadora",
+    "razao_social": "Vivo Operadora"
+  },
+  {
+    "codigo": "Zaffari",
+    "nome_fantasia": "Zaffari",
+    "razao_social": "Zaffari"
+  },
+  {
+    "codigo": "Zara",
+    "nome_fantasia": "Zara",
+    "razao_social": "Zara"
+  }
+]

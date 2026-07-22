@@ -1,0 +1,32 @@
+{
+  "fetched_at": "2026-07-22T20:02:33.374Z",
+  "adapters": [
+    "bronzedagg"
+  ],
+  "summaries": [
+    {
+      "adapter": "bronzedagg",
+      "timestamp": "2026-07-22T20:02:33.370Z",
+      "files": {
+        "conta_azul": "G:\\Meu Drive\\BGP\\CLIENTES\\BI\\489. BRONZE DA GG\\BASES\\extrato_financeiroBronzedagg.xlsx",
+        "trinks": "G:\\Meu Drive\\BGP\\CLIENTES\\BI\\489. BRONZE DA GG\\BASES\\faturamento_trinks_2026.xlsx"
+      },
+      "records": 18246,
+      "by_source": {
+        "conta_azul": 16719,
+        "trinks": 1527
+      },
+      "unidades": [
+        "Alphaville",
+        "Capão",
+        "Carlos Gomes",
+        "Franquias",
+        "GG House",
+        "Itaim",
+        "Matriz",
+        "Menino Deus",
+        "Sunglow"
+      ]
+    }
+  ]
+}

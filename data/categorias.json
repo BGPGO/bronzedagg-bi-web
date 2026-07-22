@@ -1,0 +1,577 @@
+[
+  {
+    "codigo": "1.1. Serviços de Bronze",
+    "descricao": "1.1. Serviços de Bronze",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "1.10. Vendas TikTok",
+    "descricao": "1.10. Vendas TikTok",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "1.11. Taxa de Franquia",
+    "descricao": "1.11. Taxa de Franquia",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "1.2. Produtos",
+    "descricao": "1.2. Produtos",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "1.2.1. Produtos Franquias",
+    "descricao": "1.2.1. Produtos Franquias",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "1.3. Sublocação",
+    "descricao": "1.3. Sublocação",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "1.5. Taxa Representação",
+    "descricao": "1.5. Taxa Representação",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "1.6. Royalties Franquia",
+    "descricao": "1.6. Royalties Franquia",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "1.7. Taxa de Marketing",
+    "descricao": "1.7. Taxa de Marketing",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "1.9. Café",
+    "descricao": "1.9. Café",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "13º salário",
+    "descricao": "13º salário",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "13º salário G&A",
+    "descricao": "13º salário G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "16. CAPEX",
+    "descricao": "16. CAPEX",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Agência Marketing",
+    "descricao": "Agência Marketing",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Aluguel",
+    "descricao": "Aluguel",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Aluguel G&A",
+    "descricao": "Aluguel G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Aquisição de Bens",
+    "descricao": "Aquisição de Bens",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Aquisição de Bens e Insumos - Café GG House",
+    "descricao": "Aquisição de Bens e Insumos - Café GG House",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Assessoria Jurídica",
+    "descricao": "Assessoria Jurídica",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Assessoria Site",
+    "descricao": "Assessoria Site",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "CMV - Compra produtos fornecedor",
+    "descricao": "CMV - Compra produtos fornecedor",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "CSP - Insumos",
+    "descricao": "CSP - Insumos",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "CSP - Produtos BGG",
+    "descricao": "CSP - Produtos BGG",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "CSP - Produtos LABOTERRA",
+    "descricao": "CSP - Produtos LABOTERRA",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Cartão de crédito",
+    "descricao": "Cartão de crédito",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Certificado Digital",
+    "descricao": "Certificado Digital",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Comissões",
+    "descricao": "Comissões",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Condomínio",
+    "descricao": "Condomínio",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Consultoria",
+    "descricao": "Consultoria",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Consumo Clientes",
+    "descricao": "Consumo Clientes",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Contador",
+    "descricao": "Contador",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Contador G&A",
+    "descricao": "Contador G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Correios/Entrega",
+    "descricao": "Correios/Entrega",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Custos de Maquininha",
+    "descricao": "Custos de Maquininha",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Decoração Operação",
+    "descricao": "Decoração Operação",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Decoração Operação G&A",
+    "descricao": "Decoração Operação G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Descontos Trinks",
+    "descricao": "Descontos Trinks",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Design Gráfico",
+    "descricao": "Design Gráfico",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Deslocamento para atendimento",
+    "descricao": "Deslocamento para atendimento",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Deslocamentos G&A",
+    "descricao": "Deslocamentos G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Despesas Judiciais",
+    "descricao": "Despesas Judiciais",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Despesas Processuais",
+    "descricao": "Despesas Processuais",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Despesas a identificar",
+    "descricao": "Despesas a identificar",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Despesas de Viagem",
+    "descricao": "Despesas de Viagem",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Devolução/Estorno Cliente",
+    "descricao": "Devolução/Estorno Cliente",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Dividendos",
+    "descricao": "Dividendos",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Empréstimo - Amortização",
+    "descricao": "Empréstimo - Amortização",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Estorno - Entrada",
+    "descricao": "Estorno - Entrada",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Estorno - Saída",
+    "descricao": "Estorno - Saída",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Eventos Marketing",
+    "descricao": "Eventos Marketing",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Exames Periódicos",
+    "descricao": "Exames Periódicos",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "FGTS",
+    "descricao": "FGTS",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "FGTS G&A",
+    "descricao": "FGTS G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Frete entre estoques",
+    "descricao": "Frete entre estoques",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Férias G&A",
+    "descricao": "Férias G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "ICMS",
+    "descricao": "ICMS",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "INSS",
+    "descricao": "INSS",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "INSS G&A",
+    "descricao": "INSS G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "IOF",
+    "descricao": "IOF",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "ISS/Tributos",
+    "descricao": "ISS/Tributos",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Importação",
+    "descricao": "Importação",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Influenciadoras",
+    "descricao": "Influenciadoras",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Integrações/Presentes",
+    "descricao": "Integrações/Presentes",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Integrações/Presentes G&A",
+    "descricao": "Integrações/Presentes G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Internet",
+    "descricao": "Internet",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Internet G&A",
+    "descricao": "Internet G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Juros e Multas",
+    "descricao": "Juros e Multas",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Juros recebidos",
+    "descricao": "Juros recebidos",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Kit de Cuidados Funcionárias",
+    "descricao": "Kit de Cuidados Funcionárias",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Lavanderia",
+    "descricao": "Lavanderia",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Luz",
+    "descricao": "Luz",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Manutenção",
+    "descricao": "Manutenção",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Material Gráfico",
+    "descricao": "Material Gráfico",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Material de Escritório e Consumo",
+    "descricao": "Material de Escritório e Consumo",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Material de Escritório e Consumo G&A",
+    "descricao": "Material de Escritório e Consumo G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Material para banheiro",
+    "descricao": "Material para banheiro",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Movimentações Entrada - SunGlow",
+    "descricao": "Movimentações Entrada - SunGlow",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Movimentações Saída - SunGlow",
+    "descricao": "Movimentações Saída - SunGlow",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Mão de obra terceirizada",
+    "descricao": "Mão de obra terceirizada",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Mão de obra terceirizada G&A",
+    "descricao": "Mão de obra terceirizada G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Mídia Paga",
+    "descricao": "Mídia Paga",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Pagamento Profissional",
+    "descricao": "Pagamento Profissional",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Pagamento Profissional G&A",
+    "descricao": "Pagamento Profissional G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Passagem/Vale Transporte",
+    "descricao": "Passagem/Vale Transporte",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Plano de Saúde G&A",
+    "descricao": "Plano de Saúde G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Projetos Estratégicos e Reformas",
+    "descricao": "Projetos Estratégicos e Reformas",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Pró-Labore",
+    "descricao": "Pró-Labore",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Receita não operacional",
+    "descricao": "Receita não operacional",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Receitas a identificar",
+    "descricao": "Receitas a identificar",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Reembolso Studios",
+    "descricao": "Reembolso Studios",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Relacionamento clientes/fornecedores",
+    "descricao": "Relacionamento clientes/fornecedores",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Rendimento Aplicação",
+    "descricao": "Rendimento Aplicação",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Rescisão",
+    "descricao": "Rescisão",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Rescisão G&A",
+    "descricao": "Rescisão G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Saldo Inicial",
+    "descricao": "Saldo Inicial",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Segurança",
+    "descricao": "Segurança",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Seguro",
+    "descricao": "Seguro",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Serviço/Material de Limpeza",
+    "descricao": "Serviço/Material de Limpeza",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Serviço/Material de Limpeza  G&A",
+    "descricao": "Serviço/Material de Limpeza  G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Simples Nacional - DAS",
+    "descricao": "Simples Nacional - DAS",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Sistema G&A",
+    "descricao": "Sistema G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Software de Marketing",
+    "descricao": "Software de Marketing",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Software e Sistema",
+    "descricao": "Software e Sistema",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Taxa de Alvará",
+    "descricao": "Taxa de Alvará",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Taxas Bancárias",
+    "descricao": "Taxas Bancárias",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Telefone",
+    "descricao": "Telefone",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Telefone - G&A",
+    "descricao": "Telefone - G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Transferência de Entrada",
+    "descricao": "Transferência de Entrada",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Transferência de Saída",
+    "descricao": "Transferência de Saída",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Transferência entre Contas - Entradas",
+    "descricao": "Transferência entre Contas - Entradas",
+    "tipo": "receita"
+  },
+  {
+    "codigo": "Transferência entre Contas - Saídas",
+    "descricao": "Transferência entre Contas - Saídas",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Treinamentos G&A",
+    "descricao": "Treinamentos G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Uniforme",
+    "descricao": "Uniforme",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Uniforme G&A",
+    "descricao": "Uniforme G&A",
+    "tipo": "despesa"
+  },
+  {
+    "codigo": "Vale Alimentação G&A",
+    "descricao": "Vale Alimentação G&A",
+    "tipo": "despesa"
+  }
+]

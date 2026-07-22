@@ -1,0 +1,56 @@
+[
+  {
+    "codigo": "Alphaville",
+    "descricao": "Alphaville",
+    "is_grupo": false,
+    "is_franquia_propria": true
+  },
+  {
+    "codigo": "Capão",
+    "descricao": "Capão",
+    "is_grupo": true,
+    "is_franquia_propria": false
+  },
+  {
+    "codigo": "Carlos Gomes",
+    "descricao": "Carlos Gomes",
+    "is_grupo": false,
+    "is_franquia_propria": true
+  },
+  {
+    "codigo": "Franquias",
+    "descricao": "Franquias",
+    "is_grupo": true,
+    "is_franquia_propria": false
+  },
+  {
+    "codigo": "GG House",
+    "descricao": "GG House",
+    "is_grupo": true,
+    "is_franquia_propria": false
+  },
+  {
+    "codigo": "Itaim",
+    "descricao": "Itaim",
+    "is_grupo": true,
+    "is_franquia_propria": false
+  },
+  {
+    "codigo": "Matriz",
+    "descricao": "Matriz",
+    "is_grupo": true,
+    "is_franquia_propria": false
+  },
+  {
+    "codigo": "Menino Deus",
+    "descricao": "Menino Deus",
+    "is_grupo": true,
+    "is_franquia_propria": false
+  },
+  {
+    "codigo": "Sunglow",
+    "descricao": "Sunglow",
+    "is_grupo": false,
+    "is_franquia_propria": false
+  }
+]

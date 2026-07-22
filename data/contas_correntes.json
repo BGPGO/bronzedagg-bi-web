@@ -1,0 +1,121 @@
+[
+  {
+    "id": "Cartão de Crédito - Alphaville",
+    "nome": "Cartão de Crédito - Alphaville",
+    "banco": "Cartão de Crédito - Alphaville",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Cartão de Crédito - Bronze da GG",
+    "nome": "Cartão de Crédito - Bronze da GG",
+    "banco": "Cartão de Crédito - Bronze da GG",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Cartão de Crédito - GG House",
+    "nome": "Cartão de Crédito - GG House",
+    "banco": "Cartão de Crédito - GG House",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Cartão de Crédito Itaim",
+    "nome": "Cartão de Crédito Itaim",
+    "banco": "Cartão de Crédito Itaim",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Cartão de Crédito Menino Deus",
+    "nome": "Cartão de Crédito Menino Deus",
+    "banco": "Cartão de Crédito Menino Deus",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "FLASH - Benefícios",
+    "nome": "FLASH - Benefícios",
+    "banco": "FLASH - Benefícios",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Inter - Alphaville",
+    "nome": "Inter - Alphaville",
+    "banco": "Inter - Alphaville",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Inter - GG House",
+    "nome": "Inter - GG House",
+    "banco": "Inter - GG House",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Inter - Matriz",
+    "nome": "Inter - Matriz",
+    "banco": "Inter - Matriz",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Itaú - Alphaville",
+    "nome": "Itaú - Alphaville",
+    "banco": "Itaú - Alphaville",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Itaú - Capão da Canoa",
+    "nome": "Itaú - Capão da Canoa",
+    "banco": "Itaú - Capão da Canoa",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Itaú - Franquias",
+    "nome": "Itaú - Franquias",
+    "banco": "Itaú - Franquias",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Itaú - Fundos de Investimentos",
+    "nome": "Itaú - Fundos de Investimentos",
+    "banco": "Itaú - Fundos de Investimentos",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Itaú - GG House",
+    "nome": "Itaú - GG House",
+    "banco": "Itaú - GG House",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Itaú - Itaim",
+    "nome": "Itaú - Itaim",
+    "banco": "Itaú - Itaim",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Itaú - Matriz",
+    "nome": "Itaú - Matriz",
+    "banco": "Itaú - Matriz",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  },
+  {
+    "id": "Itaú - Menino Deus",
+    "nome": "Itaú - Menino Deus",
+    "banco": "Itaú - Menino Deus",
+    "codigo_banco": "",
+    "saldo_inicial": 0
+  }
+]
