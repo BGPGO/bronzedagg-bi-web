@@ -16,12 +16,12 @@
   --mute-2: #3a4348;
   --fg-4: #3a4348;
 
-  --cyan: #22d3ee;
-  --cyan-2: #67e8f9;
-  --cyan-3: #a5f3fc;
-  --cyan-dim: #0e7490;
-  --cyan-glow: rgba(34, 211, 238, 0.35);
-  --cyan-glow-strong: rgba(34, 211, 238, 0.6);
+  --cyan: #b7906a;
+  --cyan-2: #d4b896;
+  --cyan-3: #e8d5c0;
+  --cyan-dim: #745b3e;
+  --cyan-glow: rgba(183, 144, 106, 0.35);
+  --cyan-glow-strong: rgba(183, 144, 106, 0.6);
 
   --green: #10b981;
   --green-2: #34d399;

@@ -88,7 +88,7 @@ const Sidebar = ({ active, onSelect, open }) => {
   return (
     <aside className={`sidebar ${open ? "open" : ""}`}>
       <div className="sb-brand">
-        <img src="assets/bgp-logo-white.png" alt="BGP" className="sb-logo-img" />
+        <img src="assets/logo-cliente.svg" alt="Bronze da GG" className="sb-logo-img" style={{ filter: "brightness(10)" }} />
       </div>
       <div className="sb-section">Geral</div>
       {general.map(renderItem)}

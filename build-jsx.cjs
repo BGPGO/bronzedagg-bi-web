@@ -266,7 +266,7 @@ const PAGE_MODE_INJECT = `\n// Injetado por build-jsx.cjs a partir de bi.config.
             return (
               <div key={id + '-' + i} className="bi-print-page">
                 <div className="bi-print-header">
-                  <img src="assets/bgp-logo-white.png" alt="BGP" className="bi-print-logo" />
+                  <img src="assets/logo-cliente.svg" alt="Bronze da GG" className="bi-print-logo" style={{ filter: "brightness(10)" }} />
                   <div className="bi-print-title">
                     <div className="bi-print-pagenum">{PAGE_LABELS[id] || id}</div>
                     <div className="bi-print-brand">BI Financeiro</div>

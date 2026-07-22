@@ -5,7 +5,7 @@ module.exports = {
     nome: "Grupo Bronze da GG",
     subdomain: "bronzedagg-bi",
     coolify_app_uuid: "lzsuuej0c72mz6h4vjjb0ruj",
-    cor_primaria: "#c2185b",
+    cor_primaria: "#b7906a",
   },
 
   fontes: {
