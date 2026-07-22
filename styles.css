@@ -23,20 +23,20 @@
   --cyan-glow: rgba(183, 144, 106, 0.25);
   --cyan-glow-strong: rgba(183, 144, 106, 0.45);
 
-  --green: #2d8a56;
-  --green-2: #3da86a;
-  --green-3: #6cc48e;
-  --green-dim: #1a5c36;
-  --green-soft: rgba(45, 138, 86, 0.12);
+  --green: #10b981;
+  --green-2: #34d399;
+  --green-3: #6ee7b7;
+  --green-dim: #064e3b;
+  --green-soft: rgba(16, 185, 129, 0.18);
 
-  --red: #c0392b;
-  --red-2: #d95043;
-  --red-3: #e88a82;
-  --red-dim: #7a2219;
-  --red-soft: rgba(192, 57, 43, 0.10);
+  --red: #ef4444;
+  --red-2: #f87171;
+  --red-3: #fca5a5;
+  --red-dim: #7f1d1d;
+  --red-soft: rgba(239, 68, 68, 0.18);
 
-  --amber: #c87f0a;
-  --violet: #7c5cbf;
+  --amber: #f59e0b;
+  --violet: #a78bfa;
 
   --line: #e0d5cc;
   --line-soft: #ece4db;
