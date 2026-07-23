@@ -180,35 +180,57 @@ module.exports = {
       });
     }
 
-    // ====== 2. TRINKS (faturamento) ======
+    // ====== 2. TRINKS (faturamento) — fonte: Relatório Sistema ======
     const trFile = path.join(drive, bgg.trinks_file);
-    console.log('=== Lendo Trinks:', trFile);
+    const trSheet = bgg.trinks_sheet || 'Relatório Sistema';
+    console.log('=== Lendo Trinks:', trFile, '→', trSheet);
     const trWb = XLSX.readFile(trFile);
-    const trRows = XLSX.utils.sheet_to_json(trWb.Sheets['Faturamento Diário'], { defval: '' });
-    console.log(`  ${trRows.length} linhas de faturamento`);
+    const trRows = XLSX.utils.sheet_to_json(trWb.Sheets[trSheet], { defval: '' });
+    console.log(`  ${trRows.length} linhas no Relatório Sistema`);
 
+    // Normalização de nomes de unidade do Trinks → padrão do BI
+    const UNIT_NORM = {
+      'ALPHAVILLE': 'Alphaville',
+      'Alphaville': 'Alphaville',
+      'ITAIM': 'Itaim',
+      'Itaim': 'Itaim',
+      'GG House': 'GG House',
+      'Menino Deus': 'Menino Deus',
+      'Carlos Gomes': 'Carlos Gomes',
+      'Capão da Canoa': 'Capão',
+      'Novo Hamburgo': 'Novo Hamburgo',
+    };
+
+    // Agregar por unidade + data de atendimento (competência)
+    // Regra do Excel: 1.1. Serviços de Bronze = Serviços + Pacotes
+    //                 1.2. Produtos = Produtos
+    //                 Só Tipo="Pagamento" (excluir Estorno)
+    let trCount = 0;
     for (const r of trRows) {
-      const unidade = r['Unidade'] || '';
-      const data = isoDate(r['Data']);
-      const servicos = num(r['Serviços (R$)']);
-      const produtos = num(r['Produtos (R$)']);
-      const pacotes = num(r['Pacotes (R$)']);
-      const valePresente = num(r['Vale-Presente (R$)']);
-      const creditoCliente = num(r['Crédito Cliente (R$)']);
-      const descontos = num(r['Descontos (R$)']);
-      const totalRecebido = num(r['Total Recebido (R$)']);
-      const fatComercial = num(r['Faturamento Comercial (R$)']);
+      const tipo = r['Tipo'] || '';
+      if (tipo !== 'Pagamento') continue;
 
-      // Normalizar nome da unidade
-      let unitNorm = unidade.replace('BGG ', '').replace('BGG', '').trim();
-      if (unitNorm === 'Menino Deus') unitNorm = 'Menino Deus';
+      const rawUnit = r['Centro de Custo'] || '';
+      const unitNorm = UNIT_NORM[rawUnit] || rawUnit;
+      if (!unitNorm) continue;
+
+      // Data de Atendimento/Venda = competência
+      const dataAtend = r['Data de Atendimento/Venda'];
+      const data = isoDate(dataAtend);
+      if (!data) continue;
+
+      const servicos = num(r['Total (R$) Serviço']);
+      const produtos = num(r['Total (R$) Produtos']);
+      const pacotes = num(r['Total (R$) Pacotes']);
+      const nomeCliente = r['Nome do Cliente'] || '';
 
       const tags = ['FATURAMENTO'];
       if (GRUPO_UNIDADES.includes(unitNorm)) tags.push('GRUPO');
       if (FRANQUIAS_PROPRIAS.includes(unitNorm)) tags.push('FRANQUIA_PROPRIA');
 
-      // Lançamento de faturamento (serviços)
-      if (servicos > 0) {
+      // 1.1. Serviços de Bronze = Serviços + Pacotes (regra da planilha)
+      const totalServicos = servicos + pacotes;
+      if (totalServicos > 0) {
         movimentos.push({
           id: `TR-SRV-${idCounter++}`,
           fonte: 'trinks',
@@ -219,12 +241,12 @@ module.exports = {
           data_vencimento: data,
           data_pagamento: data,
           data_competencia: data,
-          valor_total: servicos,
-          valor_pago: servicos,
+          valor_total: totalServicos,
+          valor_pago: totalServicos,
           valor_aberto: 0,
           categoria: '1.1. Serviços de Bronze',
           centro_custo: unitNorm,
-          cliente: 'Faturamento Trinks',
+          cliente: nomeCliente || 'Faturamento Trinks',
           conta_corrente: '',
           codigo_banco: '',
           observacao: `Serviços ${unitNorm} ${data}`,
@@ -233,9 +255,10 @@ module.exports = {
           is_transferencia: false,
           is_grupo: GRUPO_UNIDADES.includes(unitNorm),
         });
+        trCount++;
       }
 
-      // Produtos
+      // 1.2. Produtos
       if (produtos > 0) {
         movimentos.push({
           id: `TR-PRD-${idCounter++}`,
@@ -252,7 +275,7 @@ module.exports = {
           valor_aberto: 0,
           categoria: '1.2. Produtos',
           centro_custo: unitNorm,
-          cliente: 'Faturamento Trinks',
+          cliente: nomeCliente || 'Faturamento Trinks',
           conta_corrente: '',
           codigo_banco: '',
           observacao: `Produtos ${unitNorm} ${data}`,
@@ -261,64 +284,10 @@ module.exports = {
           is_transferencia: false,
           is_grupo: GRUPO_UNIDADES.includes(unitNorm),
         });
-      }
-
-      // Pacotes
-      if (pacotes > 0) {
-        movimentos.push({
-          id: `TR-PKG-${idCounter++}`,
-          fonte: 'trinks',
-          natureza: 'R',
-          status: 'RECEBIDO',
-          realizado: true,
-          data_emissao: data,
-          data_vencimento: data,
-          data_pagamento: data,
-          data_competencia: data,
-          valor_total: pacotes,
-          valor_pago: pacotes,
-          valor_aberto: 0,
-          categoria: '1.2. Produtos',
-          centro_custo: unitNorm,
-          cliente: 'Faturamento Trinks',
-          conta_corrente: '',
-          codigo_banco: '',
-          observacao: `Pacotes ${unitNorm} ${data}`,
-          tags: [...tags, 'PACOTE'],
-          is_dna: false,
-          is_transferencia: false,
-          is_grupo: GRUPO_UNIDADES.includes(unitNorm),
-        });
-      }
-
-      // Descontos (valor negativo no original, lançar como despesa/dedução)
-      if (descontos < 0) {
-        movimentos.push({
-          id: `TR-DESC-${idCounter++}`,
-          fonte: 'trinks',
-          natureza: 'P',
-          status: 'PAGO',
-          realizado: true,
-          data_emissao: data,
-          data_vencimento: data,
-          data_pagamento: data,
-          data_competencia: data,
-          valor_total: Math.abs(descontos),
-          valor_pago: Math.abs(descontos),
-          valor_aberto: 0,
-          categoria: 'Descontos Trinks',
-          centro_custo: unitNorm,
-          cliente: 'Faturamento Trinks',
-          conta_corrente: '',
-          codigo_banco: '',
-          observacao: `Descontos ${unitNorm} ${data}`,
-          tags: [...tags, 'DESCONTO'],
-          is_dna: false,
-          is_transferencia: false,
-          is_grupo: GRUPO_UNIDADES.includes(unitNorm),
-        });
+        trCount++;
       }
     }
+    console.log(`  ${trCount} lançamentos Trinks gerados`);
 
     console.log(`  Total movimentos consolidados: ${movimentos.length}`);
     console.log(`  - Conta Azul: ${movimentos.filter(m => m.fonte === 'conta-azul').length}`);

@@ -13,7 +13,8 @@ module.exports = {
 
     bronzedagg: {
       conta_azul_file: "extrato_financeiroBronzedagg.xlsx",
-      trinks_file: "faturamento_trinks_2026.xlsx",
+      trinks_file: "[Grupo BGG] Faturamento 2026.xlsx",
+      trinks_sheet: "Relatório Sistema",
     },
 
     drive: {

@@ -1,20 +1,20 @@
 {
-  "fetched_at": "2026-07-23T19:40:47.281Z",
+  "fetched_at": "2026-07-23T20:34:41.421Z",
   "adapters": [
     "bronzedagg"
   ],
   "summaries": [
     {
       "adapter": "bronzedagg",
-      "timestamp": "2026-07-23T19:40:47.274Z",
+      "timestamp": "2026-07-23T20:34:41.408Z",
       "files": {
         "conta_azul": "G:\\Meu Drive\\BGP\\CLIENTES\\BI\\489. BRONZE DA GG\\BASES\\extrato_financeiroBronzedagg.xlsx",
-        "trinks": "G:\\Meu Drive\\BGP\\CLIENTES\\BI\\489. BRONZE DA GG\\BASES\\faturamento_trinks_2026.xlsx"
+        "trinks": "G:\\Meu Drive\\BGP\\CLIENTES\\BI\\489. BRONZE DA GG\\BASES\\[Grupo BGG] Faturamento 2026.xlsx"
       },
-      "records": 18230,
+      "records": 51199,
       "by_source": {
         "conta_azul": 16719,
-        "trinks": 1511
+        "trinks": 34480
       },
       "unidades": [
         "Alphaville",
@@ -25,6 +25,7 @@
         "Itaim",
         "Matriz",
         "Menino Deus",
+        "Novo Hamburgo",
         "Sunglow"
       ]
     }
