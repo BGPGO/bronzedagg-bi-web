@@ -1,12 +1,12 @@
 {
-  "fetched_at": "2026-07-22T20:02:33.374Z",
+  "fetched_at": "2026-07-23T12:50:45.029Z",
   "adapters": [
     "bronzedagg"
   ],
   "summaries": [
     {
       "adapter": "bronzedagg",
-      "timestamp": "2026-07-22T20:02:33.370Z",
+      "timestamp": "2026-07-23T12:50:45.026Z",
       "files": {
         "conta_azul": "G:\\Meu Drive\\BGP\\CLIENTES\\BI\\489. BRONZE DA GG\\BASES\\extrato_financeiroBronzedagg.xlsx",
         "trinks": "G:\\Meu Drive\\BGP\\CLIENTES\\BI\\489. BRONZE DA GG\\BASES\\faturamento_trinks_2026.xlsx"

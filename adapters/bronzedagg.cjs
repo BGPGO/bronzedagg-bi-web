@@ -136,7 +136,10 @@ module.exports = {
       if (unidade === 'Capão da Canoa') unidade = 'Capão';
 
       const natureza = tipo === 'Receita' ? 'R' : 'P';
-      const realizado = situacao === 'Quitado';
+      // Realizado (caixa) no Conta Azul = dinheiro que efetivamente movimentou:
+      // "Conciliado" (conciliado no extrato bancário) OU "Quitado" (baixado).
+      // "Em aberto"/"Atrasado" = a vencer; "Transferido" = transferência.
+      const realizado = situacao === 'Conciliado' || situacao === 'Quitado';
 
       // Tags
       const tags = [];

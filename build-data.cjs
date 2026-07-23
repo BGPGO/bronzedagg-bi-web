@@ -265,6 +265,7 @@ function normalizeMovimento(m) {
       grupo: '',
       nf: '',
       parcela: '',
+      fonte: m.fonte || '',
     };
   }
   // --- Formato Omie (legacy) ---
@@ -341,6 +342,19 @@ if (movimentos.length > 1000) {
 }
 console.log(`  receitas validas: ${recNorm.length}`);
 console.log(`  despesas validas: ${despNorm.length}`);
+
+// ---------- separar Trinks (competencia) do Conta Azul (caixa) ----------
+// REGRA Bronze da GG: faturamento = Trinks (competencia); TODO o resto = Conta Azul (caixa).
+// O pipeline principal (SEGMENTS + ALL_TX + window.BIT + getBit) fica 100% Conta Azul,
+// entao Overview/Receita/Despesa/Fluxo/Tesouraria/Comparativo/Relatorio/Lojas usam so CA.
+// O Trinks vai numa estrutura separada (window.TRINKS_TX) que so a tela Faturamento e a
+// linha de faturamento do DRE consomem. NAO somar as duas fontes fora do DRE.
+const trinksRec = recNorm.filter((t) => t.fonte === 'trinks');
+const TRINKS_UNITS = [...new Set(trinksRec.map((t) => t.centroCusto).filter(Boolean))];
+recNorm = recNorm.filter((t) => t.fonte !== 'trinks');
+despNorm = despNorm.filter((t) => t.fonte !== 'trinks');
+console.log(`  [split] Trinks (faturamento/competencia): ${trinksRec.length} receitas | unidades: ${TRINKS_UNITS.join(', ')}`);
+console.log(`  [split] Conta Azul (caixa/pipeline principal): ${recNorm.length} rec + ${despNorm.length} desp`);
 
 // ---------- decidir ano de referencia ----------
 // Default: ANO CORRENTE (operador quer ver o que ta acontecendo agora).
@@ -576,6 +590,11 @@ const meta = {
     clientes: clientes.length,
   },
   categoria_overrides: (_cfg.meta && _cfg.meta.categoria_overrides) || {},
+  // Unidades que existem no Trinks (faturamento por competencia). Usado pelo DRE
+  // pra nao contar 2x a receita de loja: a versao dessas categorias no CA dessas
+  // unidades e o caixa do mesmo faturamento e nao entra em "Outras Receitas".
+  trinks_units: TRINKS_UNITS,
+  trinks_dup_cats: ['1.1. Serviços de Bronze', '1.2. Produtos'],
 };
 
 // Posicao caixa: nao temos dados de saldo bancario direto. Usamos saldo_acumulado do realizado.
@@ -627,7 +646,7 @@ const SEGMENTS = ${JSON.stringify({ realizado, a_pagar_receber, tudo }, null, 2)
 // realizadas + a pagar + canceladas excluidas). Usada pra cross-filter real
 // — pagina recalcula KPIs/charts/tabelas em runtime via aggregateTx().
 // Cada row eh tupla compacta pra reduzir tamanho do bundle:
-// [kind, mes, dia, categoria, cliente, valor, realizado, fornecedor, centroCusto]
+// [kind, mes, dia, categoria, cliente, valor, realizado, fornecedor, centroCusto, fonte]
 const ALL_TX = ${JSON.stringify([
   ...recNorm.map(t => [
     'r',
@@ -639,6 +658,7 @@ const ALL_TX = ${JSON.stringify([
     t.realizado ? 1 : 0,
     '',
     t.centroCusto || '',
+    t.fonte || '',
   ]),
   ...despNorm.map(t => [
     'd',
@@ -650,8 +670,26 @@ const ALL_TX = ${JSON.stringify([
     t.realizado ? 1 : 0,
     t.cliente,
     t.centroCusto || '',
+    t.fonte || '',
   ]),
 ])};
+
+// TRINKS_TX: faturamento por competencia (fonte Trinks), MESMO formato de tupla que
+// ALL_TX. Fica FORA do pipeline caixa (ALL_TX/SEGMENTS). Consumido so pela tela
+// Faturamento e pela linha de faturamento do DRE. Todas receitas (kind='r').
+// [kind, mes, dia, categoria, cliente, valor, realizado, fornecedor, centroCusto, fonte]
+const TRINKS_TX = ${JSON.stringify(trinksRec.map(t => [
+  'r',
+  t.data_efetiva ? t.data_efetiva.toISOString().slice(0,7) : '',
+  t.data_efetiva ? t.data_efetiva.getDate() : 0,
+  t.categoria,
+  t.cliente,
+  t.valor,
+  t.realizado ? 1 : 0,
+  '',
+  t.centroCusto || '',
+  t.fonte || '',
+]))};
 
 const REF_YEAR = ${REF_YEAR};
 const AVAILABLE_YEARS = ${JSON.stringify(AVAILABLE_YEARS)};
@@ -818,6 +856,7 @@ window.BUDGET_BY_MONTH = ${JSON.stringify((() => {
 })())};
 window.BIT_META = META;
 window.ALL_TX = ALL_TX;
+window.TRINKS_TX = TRINKS_TX;
 window.getUnidades = function() {
   const set = new Set();
   for (const row of ALL_TX) { if (row[8]) set.add(row[8]); }

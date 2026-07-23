@@ -25,34 +25,49 @@ const PageDRE = function(props) {
 
   var dreData = useMemo(function() {
     try {
-      var allTx = window.ALL_TX || [];
-      var filtered = allTx;
-
-      if (statusFilter === 'realizado') filtered = filtered.filter(function(r) { return r[6] === 1; });
-      else if (statusFilter === 'a_pagar_receber') filtered = filtered.filter(function(r) { return r[6] === 0; });
-
-      if (drilldown && drilldown.type === 'unidade') {
-        var uVal = drilldown.value;
-        filtered = filtered.filter(function(r) { return r[8] === uVal; });
-      }
-
+      // REGRA Bronze da GG: DRE = faturamento (Trinks, competência) + resto (Conta Azul, caixa).
+      var meta = window.BIT_META || {};
+      var trinksUnits = meta.trinks_units || [];
+      var dupCats = meta.trinks_dup_cats || ['1.1. Serviços de Bronze', '1.2. Produtos'];
       var y = String(year);
-      filtered = filtered.filter(function(r) { return r[1] && r[1].indexOf(y) === 0; });
-
+      var monthSet = null;
       if (months && months.length > 0) {
-        var monthSet = {};
+        monthSet = {};
         months.forEach(function(m) { monthSet[y + '-' + String(m).padStart(2, '0')] = true; });
-        filtered = filtered.filter(function(r) { return monthSet[r[1]]; });
+      }
+      var unitFilter = (drilldown && drilldown.type === 'unidade') ? drilldown.value : null;
+      function inPeriod(r) {
+        if (!(r[1] && r[1].indexOf(y) === 0)) return false;
+        if (monthSet && !monthSet[r[1]]) return false;
+        if (unitFilter && r[8] !== unitFilter) return false;
+        return true;
+      }
+      function isDup(categoria, unidade) {
+        return dupCats.indexOf(categoria) >= 0 && trinksUnits.indexOf(unidade) >= 0;
       }
 
-      var byType = { receita: 0, deducao: 0, imposto: 0, custo: 0, despesa: 0, dna: 0, investimento: 0, financeiro: 0 };
+      var byType = { outra_receita: 0, deducao: 0, imposto: 0, custo: 0, despesa: 0, dna: 0, investimento: 0, financeiro: 0 };
       var catDetail = {};
       var byMonth = {};
+      function ensureMonth(mes) {
+        if (!byMonth[mes]) byMonth[mes] = { faturamento: 0, outra_receita: 0, deducao: 0, imposto: 0, custo: 0, despesa: 0, dna: 0, investimento: 0, financeiro: 0 };
+        return byMonth[mes];
+      }
 
-      for (var i = 0; i < filtered.length; i++) {
-        var row = filtered[i];
-        var kind = row[0], mes = row[1], categoria = row[3], valor = row[5];
+      // ---- Conta Azul (caixa): tudo do DRE menos a linha de faturamento ----
+      var caFiltered = (window.ALL_TX || []).filter(inPeriod);
+      if (statusFilter === 'realizado') caFiltered = caFiltered.filter(function(r) { return r[6] === 1; });
+      else if (statusFilter === 'a_pagar_receber') caFiltered = caFiltered.filter(function(r) { return r[6] === 0; });
+      for (var i = 0; i < caFiltered.length; i++) {
+        var row = caFiltered[i];
+        var kind = row[0], mes = row[1], categoria = row[3], valor = row[5], unidade = row[8];
+        // A receita do CA das lojas que estão no Trinks (Serviços/Produtos) é o caixa do
+        // mesmo faturamento que o Trinks já mede por competência — não conta 2x no DRE.
+        if (kind === 'r' && isDup(categoria, unidade)) continue;
         var catType = catOverrides[categoria] || (kind === 'r' ? 'receita' : 'despesa');
+        // Toda outra receita do CA (royalties, taxa de representação, sublocação, bronze de
+        // Matriz/Capão/Franquias que o Trinks não cobre) = "Outras Receitas", não faturamento.
+        if (kind === 'r' && catType === 'receita') catType = 'outra_receita';
         if (catType === 'transferencia' || catType === 'outros') continue;
 
         if (byType[catType] !== undefined) byType[catType] += valor;
@@ -60,15 +75,22 @@ const PageDRE = function(props) {
         if (!catDetail[catType]) catDetail[catType] = {};
         catDetail[catType][categoria] = (catDetail[catType][categoria] || 0) + valor;
 
-        if (mes) {
-          if (!byMonth[mes]) byMonth[mes] = { receita: 0, deducao: 0, imposto: 0, custo: 0, despesa: 0, dna: 0, investimento: 0, financeiro: 0 };
-          if (byMonth[mes][catType] !== undefined) byMonth[mes][catType] += valor;
-        }
+        if (mes) { var dcm = ensureMonth(mes); if (dcm[catType] !== undefined) dcm[catType] += valor; }
       }
 
-      var fatBruto = byType.receita;
+      // ---- Trinks (competência): linha de FATURAMENTO ----
+      var fatBruto = 0;
+      var trFiltered = (window.TRINKS_TX || []).filter(inPeriod);
+      for (var j = 0; j < trFiltered.length; j++) {
+        var tr = trFiltered[j];
+        fatBruto += tr[5];
+        if (tr[1]) ensureMonth(tr[1]).faturamento += tr[5];
+      }
+
+      var outrasReceitas = byType.outra_receita;
+      var receitaBruta = fatBruto + outrasReceitas;
       var deducoes = byType.deducao + byType.imposto;
-      var receitaLiq = fatBruto - deducoes;
+      var receitaLiq = receitaBruta - deducoes;
       var custos = byType.custo;
       var lucroBruto = receitaLiq - custos;
       var despOp = byType.despesa;
@@ -79,11 +101,13 @@ const PageDRE = function(props) {
       var financeiro = byType.financeiro;
       var resultadoFinal = resultadoUnidade - investimentos - financeiro;
 
-      var margemBruta = fatBruto > 0 ? (lucroBruto / fatBruto * 100) : 0;
-      var margemOp = fatBruto > 0 ? (lucroPre / fatBruto * 100) : 0;
+      var margemBruta = receitaBruta > 0 ? (lucroBruto / receitaBruta * 100) : 0;
+      var margemOp = receitaBruta > 0 ? (lucroPre / receitaBruta * 100) : 0;
 
       var dreLines = [
-        { label: 'FATURAMENTO COMERCIAL', value: fatBruto, bold: true, level: 0, type: null },
+        { label: 'FATURAMENTO COMERCIAL (Trinks)', value: fatBruto, bold: true, level: 0, type: null },
+        { label: '(+) Outras Receitas', value: outrasReceitas, bold: false, level: 1, type: 'outra_receita' },
+        { label: '= RECEITA BRUTA', value: receitaBruta, bold: true, level: 0, type: null, hl: true },
         { label: '(-) Descontos / Deduções', value: -byType.deducao, bold: false, level: 1, type: 'deducao' },
         { label: '(-) Impostos', value: -byType.imposto, bold: false, level: 1, type: 'imposto' },
         { label: '= RECEITA LÍQUIDA', value: receitaLiq, bold: true, level: 0, type: null, hl: true },
@@ -102,13 +126,13 @@ const PageDRE = function(props) {
       var ML = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
       var dreMonthly = monthKeys.map(function(m) {
         var d = byMonth[m];
-        var rec = d.receita, ded = d.deducao + d.imposto, cst = d.custo, dsp = d.despesa, dn = d.dna;
-        return { mes: m, label: ML[parseInt(m.slice(5,7),10)-1] || m, receita: rec, deducoes: ded, receitaLiq: rec-ded, custos: cst, lucroBruto: rec-ded-cst, despesas: dsp, lucroPre: rec-ded-cst-dsp, dna: dn, resultado: rec-ded-cst-dsp-dn };
+        var rec = d.faturamento + d.outra_receita, ded = d.deducao + d.imposto, cst = d.custo, dsp = d.despesa, dn = d.dna;
+        return { mes: m, label: ML[parseInt(m.slice(5,7),10)-1] || m, faturamento: d.faturamento, outras: d.outra_receita, receita: rec, deducoes: ded, receitaLiq: rec-ded, custos: cst, lucroBruto: rec-ded-cst, despesas: dsp, lucroPre: rec-ded-cst-dsp, dna: dn, resultado: rec-ded-cst-dsp-dn };
       });
 
-      return { dreLines: dreLines, catDetail: catDetail, dreMonthly: dreMonthly, fatBruto: fatBruto, margemBruta: margemBruta, margemOp: margemOp, resultadoFinal: resultadoFinal };
+      return { dreLines: dreLines, catDetail: catDetail, dreMonthly: dreMonthly, fatBruto: fatBruto, outrasReceitas: outrasReceitas, receitaBruta: receitaBruta, margemBruta: margemBruta, margemOp: margemOp, resultadoFinal: resultadoFinal };
     } catch(e) {
-      return { dreLines: [], catDetail: {}, dreMonthly: [], fatBruto: 0, margemBruta: 0, margemOp: 0, resultadoFinal: 0 };
+      return { dreLines: [], catDetail: {}, dreMonthly: [], fatBruto: 0, outrasReceitas: 0, receitaBruta: 0, margemBruta: 0, margemOp: 0, resultadoFinal: 0 };
     }
   }, [statusFilter, drilldown, year, months]);
 
@@ -145,7 +169,7 @@ const PageDRE = function(props) {
             var isOpen = expanded === line.type;
             var lc = line.res ? (line.value >= 0 ? "#10b981" : "#ef4444") : "#fff";
             var vc = line.value < 0 ? "#ef4444" : lc;
-            var pct = dreData.fatBruto > 0 ? (line.value / dreData.fatBruto * 100).toFixed(1) + "%" : "\u2014";
+            var pct = dreData.receitaBruta > 0 ? (line.value / dreData.receitaBruta * 100).toFixed(1) + "%" : "\u2014";
             var rows = [];
             rows.push(
               React.createElement("tr", {
@@ -165,7 +189,7 @@ const PageDRE = function(props) {
               var entries = Object.entries(dreData.catDetail[line.type]).sort(function(a,b) { return b[1] - a[1]; });
               entries.forEach(function(entry) {
                 var cat = entry[0], val = entry[1];
-                var cpct = dreData.fatBruto > 0 ? (val / dreData.fatBruto * 100).toFixed(1) + "%" : "\u2014";
+                var cpct = dreData.receitaBruta > 0 ? (val / dreData.receitaBruta * 100).toFixed(1) + "%" : "\u2014";
                 rows.push(
                   React.createElement("tr", { key: "d" + cat, style: { borderBottom: "1px solid #1a242a", background: "#0d1216" } },
                     React.createElement("td", { style: { padding: "6px 12px", paddingLeft: 60, fontSize: 13, color: "#b8c2c8" } }, cat),
@@ -196,7 +220,9 @@ const PageDRE = function(props) {
         ),
         React.createElement("tbody", null,
           [
-            { key: "receita", label: "Faturamento", bold: true },
+            { key: "faturamento", label: "Faturamento (Trinks)", bold: true },
+            { key: "outras", label: "(+) Outras Receitas", bold: false },
+            { key: "receita", label: "Receita Bruta", bold: true },
             { key: "deducoes", label: "(-) Dedu\u00e7\u00f5es", bold: false },
             { key: "receitaLiq", label: "Receita L\u00edquida", bold: true },
             { key: "custos", label: "(-) Custos", bold: false },
@@ -242,19 +268,17 @@ const PageFaturamentoTrinks = function(props) {
 
   var fatData = useMemo(function() {
     try {
-      var allTx = window.ALL_TX || [];
-      var filtered = allTx.filter(function(r) { return r[0] === 'r'; });
-      if (statusFilter === 'realizado') filtered = filtered.filter(function(r) { return r[6] === 1; });
-      else if (statusFilter === 'a_pagar_receber') filtered = filtered.filter(function(r) { return r[6] === 0; });
-      if (drilldown && drilldown.type === 'unidade') { var uv = drilldown.value; filtered = filtered.filter(function(r) { return r[8] === uv; }); }
+      // Faturamento = 100% Trinks (competência). Fonte dedicada window.TRINKS_TX,
+      // fora do pipeline de caixa (ALL_TX). Competência não depende do toggle
+      // Realizado/A vencer, então statusFilter é ignorado aqui.
+      var ff = (window.TRINKS_TX || []);
+      if (drilldown && drilldown.type === 'unidade') { var uv = drilldown.value; ff = ff.filter(function(r) { return r[8] === uv; }); }
       var y = String(year);
-      filtered = filtered.filter(function(r) { return r[1] && r[1].indexOf(y) === 0; });
+      ff = ff.filter(function(r) { return r[1] && r[1].indexOf(y) === 0; });
       if (months && months.length > 0) {
         var ms = {}; months.forEach(function(m) { ms[y + '-' + String(m).padStart(2,'0')] = true; });
-        filtered = filtered.filter(function(r) { return ms[r[1]]; });
+        ff = ff.filter(function(r) { return ms[r[1]]; });
       }
-      var fatCats = ['1.1. Serviços de Bronze','1.2. Produtos','1.2.1. Produtos Franquias','1.3. Sublocação','1.5. Taxa Representação','1.6. Royalties Franquia','1.7. Taxa de Marketing','1.9. Café','1.10. Vendas TikTok','1.11. Taxa de Franquia'];
-      var ff = filtered.filter(function(r) { return fatCats.indexOf(r[3]) >= 0; });
       var byCat = {}, byUnit = {}, byMonth = {};
       for (var i = 0; i < ff.length; i++) {
         var r = ff[i];
