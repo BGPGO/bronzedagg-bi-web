@@ -56,8 +56,72 @@ const PageDRE = function(props) {
         if (unitFilter && r[8] !== unitFilter) return false;
         return true;
       }
+      // inPeriod SEM filtro de unidade (para G&A consolidado)
+      function inPeriodAll(r) {
+        if (!(r[1] && r[1].indexOf(y) === 0)) return false;
+        if (monthSet && !monthSet[r[1]]) return false;
+        return true;
+      }
       function isDup(categoria, unidade) {
         return dupCats.indexOf(categoria) >= 0 && trinksUnits.indexOf(unidade) >= 0;
+      }
+
+      // Grupos G&A que sofrem rateio proporcional ao faturamento
+      var GA_GROUPS = {
+        dna_pessoal: true, dna_admin: true, dna_marketing: true,
+        dna_invest: true, nao_identificado: true,
+        receita_fin: true, despesa_fin: true,
+        distribuicao: true, financeiro: true
+      };
+      function isGA(catType) { return GA_GROUPS[catType] === true; }
+
+      // ---- RATEIO: calcular % de faturamento da unidade sobre o total ----
+      var gaRatio = 1; // 100% se consolidado
+      var gaRatioByMonth = {}; // ratio por mês para DRE mensal
+      if (unitFilter) {
+        // Faturamento total (todas unidades) e da unidade filtrada
+        var allTrinks = (window.TRINKS_TX || []);
+        var fatTotal = 0, fatUnidade = 0;
+        var fatTotalByMonth = {}, fatUnidadeByMonth = {};
+        for (var ti = 0; ti < allTrinks.length; ti++) {
+          var tr = allTrinks[ti];
+          if (!(tr[1] && tr[1].indexOf(y) === 0)) continue;
+          if (monthSet && !monthSet[tr[1]]) continue;
+          fatTotal += tr[5];
+          if (!fatTotalByMonth[tr[1]]) fatTotalByMonth[tr[1]] = 0;
+          fatTotalByMonth[tr[1]] += tr[5];
+          if (tr[8] === unitFilter) {
+            fatUnidade += tr[5];
+            if (!fatUnidadeByMonth[tr[1]]) fatUnidadeByMonth[tr[1]] = 0;
+            fatUnidadeByMonth[tr[1]] += tr[5];
+          }
+        }
+        // Incluir outras receitas CA no faturamento total e da unidade
+        var allCA = (window.ALL_TX || []);
+        for (var ci = 0; ci < allCA.length; ci++) {
+          var cr = allCA[ci];
+          if (cr[0] !== 'r') continue;
+          if (!(cr[1] && cr[1].indexOf(y) === 0)) continue;
+          if (monthSet && !monthSet[cr[1]]) continue;
+          if (isDup(cr[3], cr[8])) continue;
+          var crt = catOverrides[cr[3]];
+          if (crt === 'receita' || crt === 'outra_receita') {
+            fatTotal += cr[5];
+            if (!fatTotalByMonth[cr[1]]) fatTotalByMonth[cr[1]] = 0;
+            fatTotalByMonth[cr[1]] += cr[5];
+            if (cr[8] === unitFilter) {
+              fatUnidade += cr[5];
+              if (!fatUnidadeByMonth[cr[1]]) fatUnidadeByMonth[cr[1]] = 0;
+              fatUnidadeByMonth[cr[1]] += cr[5];
+            }
+          }
+        }
+        gaRatio = fatTotal > 0 ? fatUnidade / fatTotal : 0;
+        // Ratio por mês
+        for (var mk in fatTotalByMonth) {
+          gaRatioByMonth[mk] = fatTotalByMonth[mk] > 0
+            ? (fatUnidadeByMonth[mk] || 0) / fatTotalByMonth[mk] : 0;
+        }
       }
 
       // Acumuladores por DRE group
@@ -94,7 +158,21 @@ const PageDRE = function(props) {
         return byMonth[mes];
       }
 
-      // ---- Conta Azul: todas as despesas + receitas exceto faturamento Trinks ----
+      // Helper: classifica uma categoria e retorna o grupo DRE
+      function classifyCat(kind, categoria) {
+        var catType = catOverrides[categoria];
+        if (!catType) return kind === 'r' ? 'outra_receita' : 'nao_identificado';
+        if (catType === 'transferencia' || catType === 'outros') return null;
+        if (kind === 'r' && catType === 'receita') return 'outra_receita';
+        // Legacy mappings
+        if (catType === 'despesa') return 'desp_operacao';
+        if (catType === 'dna') return 'dna_admin';
+        if (catType === 'imposto') return 'deducao';
+        if (catType === 'investimento') return 'invest_unidade';
+        return catType;
+      }
+
+      // ---- Conta Azul: itens da unidade (NÃO G&A) ----
       var caFiltered = (window.ALL_TX || []).filter(inPeriod);
       if (statusFilter === 'realizado') caFiltered = caFiltered.filter(function(r) { return r[6] === 1; });
       else if (statusFilter === 'a_pagar_receber') caFiltered = caFiltered.filter(function(r) { return r[6] === 0; });
@@ -102,161 +180,32 @@ const PageDRE = function(props) {
       for (var i = 0; i < caFiltered.length; i++) {
         var row = caFiltered[i];
         var kind = row[0], mes = row[1], categoria = row[3], valor = row[5], unidade = row[8];
-
-        // Receita do CA de lojas que o Trinks já mede → não conta 2x
         if (kind === 'r' && isDup(categoria, unidade)) continue;
+        var grp = classifyCat(kind, categoria);
+        if (!grp) continue;
+        // Itens G&A da unidade filtrada serão rateados abaixo — pular aqui
+        if (unitFilter && isGA(grp)) continue;
+        addToGroup(grp, categoria, valor);
+        if (mes) ensureMonth(mes)[grp] += valor;
+      }
 
-        var catType = catOverrides[categoria];
+      // ---- G&A: ler TODAS as unidades e aplicar rateio ----
+      var caAll = (window.ALL_TX || []).filter(inPeriodAll);
+      if (statusFilter === 'realizado') caAll = caAll.filter(function(r) { return r[6] === 1; });
+      else if (statusFilter === 'a_pagar_receber') caAll = caAll.filter(function(r) { return r[6] === 0; });
 
-        // Se não tem override, classificar genericamente
-        if (!catType) {
-          catType = kind === 'r' ? 'outra_receita' : 'nao_identificado';
-        }
-
-        // Transferências e outros → excluir
-        if (catType === 'transferencia' || catType === 'outros') continue;
-
-        // Receitas do CA que são "receita" genérica → são faturamento (outras receitas)
-        if (kind === 'r' && catType === 'receita') {
-          addToGroup('outra_receita', categoria, valor);
-          if (mes) ensureMonth(mes).outra_receita += valor;
-          continue;
-        }
-
-        // Receita financeira
-        if (catType === 'receita_fin') {
-          addToGroup('receita_fin', categoria, valor);
-          if (mes) ensureMonth(mes).receita_fin += valor;
-          continue;
-        }
-
-        // Deduções (valor é positivo no CA, representamos como negativo na DRE)
-        if (catType === 'deducao') {
-          addToGroup('deducao', categoria, valor);
-          if (mes) ensureMonth(mes).deducao += valor;
-          continue;
-        }
-
-        // Custos CMV
-        if (catType === 'custo') {
-          addToGroup('cmv', categoria, valor);
-          if (mes) ensureMonth(mes).cmv += valor;
-          continue;
-        }
-
-        // Custo de Venda
-        if (catType === 'custo_venda') {
-          addToGroup('custo_venda', categoria, valor);
-          if (mes) ensureMonth(mes).custo_venda += valor;
-          continue;
-        }
-
-        // Despesas Pessoal Unidade
-        if (catType === 'desp_pessoal') {
-          addToGroup('desp_pessoal', categoria, valor);
-          if (mes) ensureMonth(mes).desp_pessoal += valor;
-          continue;
-        }
-
-        // Despesas Operação Unidade
-        if (catType === 'desp_operacao') {
-          addToGroup('desp_operacao', categoria, valor);
-          if (mes) ensureMonth(mes).desp_operacao += valor;
-          continue;
-        }
-
-        // Investimentos Unidade
-        if (catType === 'invest_unidade') {
-          addToGroup('invest_unidade', categoria, valor);
-          if (mes) ensureMonth(mes).invest_unidade += valor;
-          continue;
-        }
-
-        // DNA Pessoal G&A
-        if (catType === 'dna_pessoal') {
-          addToGroup('dna_pessoal', categoria, valor);
-          if (mes) ensureMonth(mes).dna_pessoal += valor;
-          continue;
-        }
-
-        // DNA Admin
-        if (catType === 'dna_admin') {
-          addToGroup('dna_admin', categoria, valor);
-          if (mes) ensureMonth(mes).dna_admin += valor;
-          continue;
-        }
-
-        // DNA Marketing
-        if (catType === 'dna_marketing') {
-          addToGroup('dna_marketing', categoria, valor);
-          if (mes) ensureMonth(mes).dna_marketing += valor;
-          continue;
-        }
-
-        // DNA Investimentos G&A
-        if (catType === 'dna_invest') {
-          addToGroup('dna_invest', categoria, valor);
-          if (mes) ensureMonth(mes).dna_invest += valor;
-          continue;
-        }
-
-        // Não identificados
-        if (catType === 'nao_identificado') {
-          addToGroup('nao_identificado', categoria, valor);
-          if (mes) ensureMonth(mes).nao_identificado += valor;
-          continue;
-        }
-
-        // Despesa financeira
-        if (catType === 'despesa_fin') {
-          addToGroup('despesa_fin', categoria, valor);
-          if (mes) ensureMonth(mes).despesa_fin += valor;
-          continue;
-        }
-
-        // Distribuição
-        if (catType === 'distribuicao') {
-          addToGroup('distribuicao', categoria, valor);
-          if (mes) ensureMonth(mes).distribuicao += valor;
-          continue;
-        }
-
-        // Financeiro (empréstimos)
-        if (catType === 'financeiro') {
-          addToGroup('financeiro', categoria, valor);
-          if (mes) ensureMonth(mes).financeiro += valor;
-          continue;
-        }
-
-        // Legacy: "despesa", "dna", "imposto", "investimento" → mapear
-        if (catType === 'despesa') {
-          addToGroup('desp_operacao', categoria, valor);
-          if (mes) ensureMonth(mes).desp_operacao += valor;
-          continue;
-        }
-        if (catType === 'dna') {
-          addToGroup('dna_admin', categoria, valor);
-          if (mes) ensureMonth(mes).dna_admin += valor;
-          continue;
-        }
-        if (catType === 'imposto') {
-          addToGroup('deducao', categoria, valor);
-          if (mes) ensureMonth(mes).deducao += valor;
-          continue;
-        }
-        if (catType === 'investimento') {
-          addToGroup('invest_unidade', categoria, valor);
-          if (mes) ensureMonth(mes).invest_unidade += valor;
-          continue;
-        }
-
-        // Fallback
-        if (kind === 'r') {
-          addToGroup('outra_receita', categoria, valor);
-          if (mes) ensureMonth(mes).outra_receita += valor;
-        } else {
-          addToGroup('nao_identificado', categoria, valor);
-          if (mes) ensureMonth(mes).nao_identificado += valor;
+      for (var gi = 0; gi < caAll.length; gi++) {
+        var grow = caAll[gi];
+        var gkind = grow[0], gmes = grow[1], gcategoria = grow[3], gvalor = grow[5];
+        if (gkind === 'r' && isDup(gcategoria, grow[8])) continue;
+        var ggrp = classifyCat(gkind, gcategoria);
+        if (!ggrp || !isGA(ggrp)) continue;
+        // Aplicar rateio proporcional
+        var rateadoVal = gvalor * gaRatio;
+        addToGroup(ggrp, gcategoria, rateadoVal);
+        if (gmes) {
+          var monthRatio = unitFilter ? (gaRatioByMonth[gmes] || gaRatio) : 1;
+          ensureMonth(gmes)[ggrp] += gvalor * monthRatio;
         }
       }
 
@@ -401,7 +350,8 @@ const PageDRE = function(props) {
         receitaBruta: receitaBruta, lucroBruto: lucroBruto,
         lucroOperacional: lucroOperacional, lucroLiquido: lucroLiquido,
         resultadoExercicio: resultadoExercicio,
-        margemBruta: margemBruta, margemOp: margemOp, margemLiq: margemLiq
+        margemBruta: margemBruta, margemOp: margemOp, margemLiq: margemLiq,
+        gaRatio: gaRatio
       };
     } catch(e) {
       console.error('DRE error:', e);
@@ -424,12 +374,15 @@ const PageDRE = function(props) {
   }
 
   var unitLabel = unitFilter || 'Consolidado';
+  var rateioPct = unitFilter && dreData.gaRatio < 1
+    ? " \u00b7 Rateio G&A: " + (dreData.gaRatio * 100).toFixed(1) + "%"
+    : "";
 
   return React.createElement("div", { className: "page" },
     React.createElement("div", { className: "page-title" },
       React.createElement("div", null,
         React.createElement("h1", null, "DRE \u2014 Demonstra\u00e7\u00e3o de Resultado"),
-        React.createElement("div", { className: "status-line" }, unitLabel + " \u00b7 " + year)
+        React.createElement("div", { className: "status-line" }, unitLabel + " \u00b7 " + year + rateioPct)
       )
     ),
 
