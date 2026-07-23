@@ -61,7 +61,7 @@ module.exports = {
 
   meta: {
     categoria_overrides: {
-      // Receitas (Trinks)
+      // === FATURAMENTO (receitas) ===
       "1.1. Serviços de Bronze": "receita",
       "1.2. Produtos": "receita",
       "1.2.1. Produtos Franquias": "receita",
@@ -74,120 +74,132 @@ module.exports = {
       "1.11. Taxa de Franquia": "receita",
       "Receita não operacional": "receita",
       "Receitas a identificar": "receita",
-      "Juros recebidos": "receita",
-      "Rendimento Aplicação": "receita",
       "Reembolso Studios": "receita",
 
-      // Descontos Trinks (dedução)
+      // === DEDUÇÕES ===
       "Descontos Trinks": "deducao",
+      "Simples Nacional - DAS": "deducao",
+      "Devolução/Estorno Cliente": "deducao",
+      "ISS/Tributos": "deducao",
+      "ICMS": "deducao",
 
-      // Impostos / deduções
-      "Simples Nacional - DAS": "imposto",
-      "ISS/Tributos": "imposto",
-      "ICMS": "imposto",
-      "INSS": "imposto",
-      "INSS G&A": "imposto",
-      "FGTS": "imposto",
-      "FGTS G&A": "imposto",
-      "IOF": "imposto",
-
-      // Custos operacionais
+      // === CUSTOS > CMV ===
       "CMV - Compra produtos fornecedor": "custo",
       "CSP - Insumos": "custo",
       "CSP - Produtos BGG": "custo",
       "CSP - Produtos LABOTERRA": "custo",
-      "Comissões": "custo",
-      "Custos de Maquininha": "custo",
+      "Deslocamento para atendimento": "custo",
+      "Aquisição de Bens e Insumos - Café GG House": "custo",
       "Importação": "custo",
       "Frete entre estoques": "custo",
 
-      // Despesas operacionais (unidade)
-      "Aluguel": "despesa",
-      "Condomínio": "despesa",
-      "Luz": "despesa",
-      "Internet": "despesa",
-      "Telefone": "despesa",
-      "Manutenção": "despesa",
-      "Segurança": "despesa",
-      "Seguro": "despesa",
-      "Lavanderia": "despesa",
-      "Uniforme": "despesa",
-      "Kit de Cuidados Funcionárias": "despesa",
-      "Material para banheiro": "despesa",
-      "Serviço/Material de Limpeza": "despesa",
-      "Decoração Operação": "despesa",
-      "Material de Escritório e Consumo": "despesa",
-      "Software e Sistema": "despesa",
-      "Consumo Clientes": "despesa",
-      "Deslocamento para atendimento": "despesa",
-      "Pagamento Profissional": "despesa",
-      "Passagem/Vale Transporte": "despesa",
-      "Mão de obra terceirizada": "despesa",
-      "Exames Periódicos": "despesa",
-      "13º salário": "despesa",
-      "Rescisão": "despesa",
-      "Correios/Entrega": "despesa",
-      "Taxas Bancárias": "despesa",
-      "Juros e Multas": "despesa",
-      "Certificado Digital": "despesa",
-      "Taxa de Alvará": "despesa",
-      "Design Gráfico": "despesa",
-      "Material Gráfico": "despesa",
-      "Relacionamento clientes/fornecedores": "despesa",
-      "Devolução/Estorno Cliente": "despesa",
-      "Despesas a identificar": "despesa",
+      // === CUSTOS > CUSTO DE VENDA ===
+      "Custos de Maquininha": "custo_venda",
+      "Comissões": "custo_venda",
+      "Correios/Entrega": "custo_venda",
 
-      // DNA / G&A (rateio entre unidades)
-      "Aluguel G&A": "dna",
-      "Internet G&A": "dna",
-      "Telefone - G&A": "dna",
-      "Contador G&A": "dna",
-      "Pagamento Profissional G&A": "dna",
-      "13º salário G&A": "dna",
-      "Férias G&A": "dna",
-      "Rescisão G&A": "dna",
-      "INSS G&A": "dna",
-      "FGTS G&A": "dna",
-      "Uniforme G&A": "dna",
-      "Material de Escritório e Consumo G&A": "dna",
-      "Serviço/Material de Limpeza  G&A": "dna",
-      "Decoração Operação G&A": "dna",
-      "Deslocamentos G&A": "dna",
-      "Integrações/Presentes G&A": "dna",
-      "Mão de obra terceirizada G&A": "dna",
-      "Treinamentos G&A": "dna",
-      "Vale Alimentação G&A": "dna",
-      "Plano de Saúde G&A": "dna",
-      "Sistema G&A": "dna",
+      // === DESPESAS UNIDADES > PESSOAL ===
+      "Pagamento Profissional": "desp_pessoal",
+      "Mão de obra terceirizada": "desp_pessoal",
+      "Rescisão": "desp_pessoal",
+      "13º salário": "desp_pessoal",
+      "INSS": "desp_pessoal",
+      "FGTS": "desp_pessoal",
+      "Integrações/Presentes": "desp_pessoal",
+      "Kit de Cuidados Funcionárias": "desp_pessoal",
+      "Uniforme": "desp_pessoal",
 
-      // Marketing
-      "Agência Marketing": "despesa",
-      "Software de Marketing": "despesa",
-      "Mídia Paga": "despesa",
-      "Influenciadoras": "despesa",
-      "Eventos Marketing": "despesa",
-      "Integrações/Presentes": "despesa",
+      // === DESPESAS UNIDADES > OPERAÇÃO ===
+      "Aluguel": "desp_operacao",
+      "Condomínio": "desp_operacao",
+      "Luz": "desp_operacao",
+      "Telefone": "desp_operacao",
+      "Internet": "desp_operacao",
+      "Software e Sistema": "desp_operacao",
+      "Segurança": "desp_operacao",
+      "Decoração Operação": "desp_operacao",
+      "Serviço/Material de Limpeza": "desp_operacao",
+      "Lavanderia": "desp_operacao",
+      "Material de Escritório e Consumo": "desp_operacao",
+      "Manutenção": "desp_operacao",
+      "Seguro": "desp_operacao",
+      "Contador": "desp_operacao",
+      "Material para banheiro": "desp_operacao",
+      "Consumo Clientes": "desp_operacao",
 
-      // CAPEX / investimentos
-      "16. CAPEX": "investimento",
-      "Aquisição de Bens": "investimento",
-      "Projetos Estratégicos e Reformas": "investimento",
-      "Aquisição de Bens e Insumos - Café GG House": "investimento",
+      // === DESPESAS UNIDADES > INVESTIMENTOS ===
+      "16. CAPEX": "invest_unidade",
+      "Aquisição de Bens": "invest_unidade",
+      "Projetos Estratégicos e Reformas": "invest_unidade",
 
-      // Financeiro
+      // === DNA/G&A > PESSOAL G&A ===
+      "Pró-Labore": "dna_pessoal",
+      "Pagamento Profissional G&A": "dna_pessoal",
+      "Mão de obra terceirizada G&A": "dna_pessoal",
+      "Férias G&A": "dna_pessoal",
+      "Rescisão G&A": "dna_pessoal",
+      "13º salário G&A": "dna_pessoal",
+      "INSS G&A": "dna_pessoal",
+      "FGTS G&A": "dna_pessoal",
+      "Passagem/Vale Transporte": "dna_pessoal",
+      "Integrações/Presentes G&A": "dna_pessoal",
+      "Uniforme G&A": "dna_pessoal",
+      "Exames Periódicos": "dna_pessoal",
+      "Vale Alimentação G&A": "dna_pessoal",
+      "Plano de Saúde G&A": "dna_pessoal",
+
+      // === DNA/G&A > ADMINISTRATIVAS ===
+      "Aluguel G&A": "dna_admin",
+      "Internet G&A": "dna_admin",
+      "Telefone - G&A": "dna_admin",
+      "Contador G&A": "dna_admin",
+      "Material de Escritório e Consumo G&A": "dna_admin",
+      "Serviço/Material de Limpeza  G&A": "dna_admin",
+      "Decoração Operação G&A": "dna_admin",
+      "Assessoria Jurídica": "dna_admin",
+      "Consultoria": "dna_admin",
+      "Taxas Bancárias": "dna_admin",
+      "Deslocamentos G&A": "dna_admin",
+      "Sistema G&A": "dna_admin",
+      "Despesas Processuais": "dna_admin",
+      "Despesas de Viagem": "dna_admin",
+      "Taxa de Alvará": "dna_admin",
+      "Despesas Judiciais": "dna_admin",
+      "Certificado Digital": "dna_admin",
+
+      // === DNA/G&A > MARKETING ===
+      "Design Gráfico": "dna_marketing",
+      "Agência Marketing": "dna_marketing",
+      "Influenciadoras": "dna_marketing",
+      "Mídia Paga": "dna_marketing",
+      "Relacionamento clientes/fornecedores": "dna_marketing",
+      "Material Gráfico": "dna_marketing",
+      "Eventos Marketing": "dna_marketing",
+      "Software de Marketing": "dna_marketing",
+      "Assessoria Site": "dna_marketing",
+
+      // === DNA/G&A > INVESTIMENTOS G&A ===
+      "Treinamentos G&A": "dna_invest",
+
+      // === NÃO IDENTIFICADOS ===
+      "Despesas a identificar": "nao_identificado",
+      "Cartão de crédito": "nao_identificado",
+
+      // === RECEITA FINANCEIRA ===
+      "Juros recebidos": "receita_fin",
+      "Rendimento Aplicação": "receita_fin",
+
+      // === DESPESA FINANCEIRA ===
+      "Juros e Multas": "despesa_fin",
+      "IOF": "despesa_fin",
+
+      // === DISTRIBUIÇÃO DE LUCROS ===
+      "Dividendos": "distribuicao",
+
+      // === FINANCEIRO (empréstimos etc) ===
       "Empréstimo - Amortização": "financeiro",
-      "Dividendos": "financeiro",
-      "Pró-Labore": "financeiro",
-      "Consultoria": "despesa",
-      "Contador": "despesa",
-      "Assessoria Jurídica": "despesa",
-      "Assessoria Site": "despesa",
-      "Despesas Judiciais": "despesa",
-      "Despesas Processuais": "despesa",
-      "Despesas de Viagem": "despesa",
-      "Cartão de crédito": "outros",
 
-      // Transferências (não entram no DRE)
+      // === TRANSFERÊNCIAS (não entram no DRE) ===
       "Transferência de Entrada": "transferencia",
       "Transferência de Saída": "transferencia",
       "Transferência entre Contas - Entradas": "transferencia",

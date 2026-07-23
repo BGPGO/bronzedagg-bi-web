@@ -1,12 +1,12 @@
 /**
  * pages-5.jsx — Paginas customizadas Bronze da GG
+ * DRE segue a estrutura exata da Ferramenta Financeira (planilha)
  */
 
-// Helper seguro
 function _safeGet(obj, key, def) { try { return obj[key] || def; } catch(e) { return def; } }
 
 // =========================================================================
-// PAGE DRE
+// PAGE DRE — estrutura idêntica à planilha Ferramenta Financeira
 // =========================================================================
 const PageDRE = function(props) {
   var statusFilter = props.statusFilter || 'realizado';
@@ -23,9 +23,24 @@ const PageDRE = function(props) {
   var catOverrides = {};
   try { catOverrides = window.BIT_META.categoria_overrides || {}; } catch(e) {}
 
+  // --- unit filter state ---
+  var unitState = useState('');
+  var selectedUnit = unitState[0];
+  var setSelectedUnit = unitState[1];
+  var allUnits = useMemo(function() {
+    var set = {};
+    var tx = window.ALL_TX || [];
+    for (var i = 0; i < tx.length; i++) { if (tx[i][8]) set[tx[i][8]] = true; }
+    var trx = window.TRINKS_TX || [];
+    for (var j = 0; j < trx.length; j++) { if (trx[j][8]) set[trx[j][8]] = true; }
+    return Object.keys(set).sort();
+  }, []);
+
+  // Effective unit filter: from dropdown or drilldown
+  var unitFilter = selectedUnit || ((drilldown && drilldown.type === 'unidade') ? drilldown.value : null);
+
   var dreData = useMemo(function() {
     try {
-      // REGRA Bronze da GG: DRE = faturamento (Trinks, competência) + resto (Conta Azul, caixa).
       var meta = window.BIT_META || {};
       var trinksUnits = meta.trinks_units || [];
       var dupCats = meta.trinks_dup_cats || ['1.1. Serviços de Bronze', '1.2. Produtos'];
@@ -35,7 +50,6 @@ const PageDRE = function(props) {
         monthSet = {};
         months.forEach(function(m) { monthSet[y + '-' + String(m).padStart(2, '0')] = true; });
       }
-      var unitFilter = (drilldown && drilldown.type === 'unidade') ? drilldown.value : null;
       function inPeriod(r) {
         if (!(r[1] && r[1].indexOf(y) === 0)) return false;
         if (monthSet && !monthSet[r[1]]) return false;
@@ -46,101 +60,370 @@ const PageDRE = function(props) {
         return dupCats.indexOf(categoria) >= 0 && trinksUnits.indexOf(unidade) >= 0;
       }
 
-      var byType = { outra_receita: 0, deducao: 0, imposto: 0, custo: 0, despesa: 0, dna: 0, investimento: 0, financeiro: 0 };
-      var catDetail = {};
+      // Acumuladores por DRE group
+      var groups = {
+        faturamento: {}, deducao: {}, cmv: {}, custo_venda: {},
+        desp_pessoal: {}, desp_operacao: {}, invest_unidade: {},
+        dna_pessoal: {}, dna_admin: {}, dna_marketing: {}, dna_invest: {},
+        nao_identificado: {}, receita_fin: {}, despesa_fin: {},
+        distribuicao: {}, financeiro: {},
+        outra_receita: {}
+      };
+      function addToGroup(grp, cat, val) {
+        if (!groups[grp]) groups[grp] = {};
+        groups[grp][cat] = (groups[grp][cat] || 0) + val;
+      }
+      function sumGroup(grp) {
+        var total = 0;
+        var g = groups[grp] || {};
+        for (var k in g) total += g[k];
+        return total;
+      }
+
+      // Monthly accumulators
       var byMonth = {};
       function ensureMonth(mes) {
-        if (!byMonth[mes]) byMonth[mes] = { faturamento: 0, outra_receita: 0, deducao: 0, imposto: 0, custo: 0, despesa: 0, dna: 0, investimento: 0, financeiro: 0 };
+        if (!byMonth[mes]) byMonth[mes] = {
+          faturamento: 0, outra_receita: 0, deducao: 0,
+          cmv: 0, custo_venda: 0,
+          desp_pessoal: 0, desp_operacao: 0, invest_unidade: 0,
+          dna_pessoal: 0, dna_admin: 0, dna_marketing: 0, dna_invest: 0,
+          nao_identificado: 0, receita_fin: 0, despesa_fin: 0,
+          distribuicao: 0, financeiro: 0
+        };
         return byMonth[mes];
       }
 
-      // ---- Conta Azul (caixa): tudo do DRE menos a linha de faturamento ----
+      // ---- Conta Azul: todas as despesas + receitas exceto faturamento Trinks ----
       var caFiltered = (window.ALL_TX || []).filter(inPeriod);
       if (statusFilter === 'realizado') caFiltered = caFiltered.filter(function(r) { return r[6] === 1; });
       else if (statusFilter === 'a_pagar_receber') caFiltered = caFiltered.filter(function(r) { return r[6] === 0; });
+
       for (var i = 0; i < caFiltered.length; i++) {
         var row = caFiltered[i];
         var kind = row[0], mes = row[1], categoria = row[3], valor = row[5], unidade = row[8];
-        // A receita do CA das lojas que estão no Trinks (Serviços/Produtos) é o caixa do
-        // mesmo faturamento que o Trinks já mede por competência — não conta 2x no DRE.
+
+        // Receita do CA de lojas que o Trinks já mede → não conta 2x
         if (kind === 'r' && isDup(categoria, unidade)) continue;
-        var catType = catOverrides[categoria] || (kind === 'r' ? 'receita' : 'despesa');
-        // Toda outra receita do CA (royalties, taxa de representação, sublocação, bronze de
-        // Matriz/Capão/Franquias que o Trinks não cobre) = "Outras Receitas", não faturamento.
-        if (kind === 'r' && catType === 'receita') catType = 'outra_receita';
+
+        var catType = catOverrides[categoria];
+
+        // Se não tem override, classificar genericamente
+        if (!catType) {
+          catType = kind === 'r' ? 'outra_receita' : 'nao_identificado';
+        }
+
+        // Transferências e outros → excluir
         if (catType === 'transferencia' || catType === 'outros') continue;
 
-        if (byType[catType] !== undefined) byType[catType] += valor;
+        // Receitas do CA que são "receita" genérica → são faturamento (outras receitas)
+        if (kind === 'r' && catType === 'receita') {
+          addToGroup('outra_receita', categoria, valor);
+          if (mes) ensureMonth(mes).outra_receita += valor;
+          continue;
+        }
 
-        if (!catDetail[catType]) catDetail[catType] = {};
-        catDetail[catType][categoria] = (catDetail[catType][categoria] || 0) + valor;
+        // Receita financeira
+        if (catType === 'receita_fin') {
+          addToGroup('receita_fin', categoria, valor);
+          if (mes) ensureMonth(mes).receita_fin += valor;
+          continue;
+        }
 
-        if (mes) { var dcm = ensureMonth(mes); if (dcm[catType] !== undefined) dcm[catType] += valor; }
+        // Deduções (valor é positivo no CA, representamos como negativo na DRE)
+        if (catType === 'deducao') {
+          addToGroup('deducao', categoria, valor);
+          if (mes) ensureMonth(mes).deducao += valor;
+          continue;
+        }
+
+        // Custos CMV
+        if (catType === 'custo') {
+          addToGroup('cmv', categoria, valor);
+          if (mes) ensureMonth(mes).cmv += valor;
+          continue;
+        }
+
+        // Custo de Venda
+        if (catType === 'custo_venda') {
+          addToGroup('custo_venda', categoria, valor);
+          if (mes) ensureMonth(mes).custo_venda += valor;
+          continue;
+        }
+
+        // Despesas Pessoal Unidade
+        if (catType === 'desp_pessoal') {
+          addToGroup('desp_pessoal', categoria, valor);
+          if (mes) ensureMonth(mes).desp_pessoal += valor;
+          continue;
+        }
+
+        // Despesas Operação Unidade
+        if (catType === 'desp_operacao') {
+          addToGroup('desp_operacao', categoria, valor);
+          if (mes) ensureMonth(mes).desp_operacao += valor;
+          continue;
+        }
+
+        // Investimentos Unidade
+        if (catType === 'invest_unidade') {
+          addToGroup('invest_unidade', categoria, valor);
+          if (mes) ensureMonth(mes).invest_unidade += valor;
+          continue;
+        }
+
+        // DNA Pessoal G&A
+        if (catType === 'dna_pessoal') {
+          addToGroup('dna_pessoal', categoria, valor);
+          if (mes) ensureMonth(mes).dna_pessoal += valor;
+          continue;
+        }
+
+        // DNA Admin
+        if (catType === 'dna_admin') {
+          addToGroup('dna_admin', categoria, valor);
+          if (mes) ensureMonth(mes).dna_admin += valor;
+          continue;
+        }
+
+        // DNA Marketing
+        if (catType === 'dna_marketing') {
+          addToGroup('dna_marketing', categoria, valor);
+          if (mes) ensureMonth(mes).dna_marketing += valor;
+          continue;
+        }
+
+        // DNA Investimentos G&A
+        if (catType === 'dna_invest') {
+          addToGroup('dna_invest', categoria, valor);
+          if (mes) ensureMonth(mes).dna_invest += valor;
+          continue;
+        }
+
+        // Não identificados
+        if (catType === 'nao_identificado') {
+          addToGroup('nao_identificado', categoria, valor);
+          if (mes) ensureMonth(mes).nao_identificado += valor;
+          continue;
+        }
+
+        // Despesa financeira
+        if (catType === 'despesa_fin') {
+          addToGroup('despesa_fin', categoria, valor);
+          if (mes) ensureMonth(mes).despesa_fin += valor;
+          continue;
+        }
+
+        // Distribuição
+        if (catType === 'distribuicao') {
+          addToGroup('distribuicao', categoria, valor);
+          if (mes) ensureMonth(mes).distribuicao += valor;
+          continue;
+        }
+
+        // Financeiro (empréstimos)
+        if (catType === 'financeiro') {
+          addToGroup('financeiro', categoria, valor);
+          if (mes) ensureMonth(mes).financeiro += valor;
+          continue;
+        }
+
+        // Legacy: "despesa", "dna", "imposto", "investimento" → mapear
+        if (catType === 'despesa') {
+          addToGroup('desp_operacao', categoria, valor);
+          if (mes) ensureMonth(mes).desp_operacao += valor;
+          continue;
+        }
+        if (catType === 'dna') {
+          addToGroup('dna_admin', categoria, valor);
+          if (mes) ensureMonth(mes).dna_admin += valor;
+          continue;
+        }
+        if (catType === 'imposto') {
+          addToGroup('deducao', categoria, valor);
+          if (mes) ensureMonth(mes).deducao += valor;
+          continue;
+        }
+        if (catType === 'investimento') {
+          addToGroup('invest_unidade', categoria, valor);
+          if (mes) ensureMonth(mes).invest_unidade += valor;
+          continue;
+        }
+
+        // Fallback
+        if (kind === 'r') {
+          addToGroup('outra_receita', categoria, valor);
+          if (mes) ensureMonth(mes).outra_receita += valor;
+        } else {
+          addToGroup('nao_identificado', categoria, valor);
+          if (mes) ensureMonth(mes).nao_identificado += valor;
+        }
       }
 
-      // ---- Trinks (competência): linha de FATURAMENTO ----
+      // ---- Trinks (competência): FATURAMENTO ----
       var fatBruto = 0;
       var trFiltered = (window.TRINKS_TX || []).filter(inPeriod);
       for (var j = 0; j < trFiltered.length; j++) {
         var tr = trFiltered[j];
         fatBruto += tr[5];
+        addToGroup('faturamento', tr[3], tr[5]);
         if (tr[1]) ensureMonth(tr[1]).faturamento += tr[5];
       }
 
-      var outrasReceitas = byType.outra_receita;
-      var receitaBruta = fatBruto + outrasReceitas;
-      var deducoes = byType.deducao + byType.imposto;
-      var receitaLiq = receitaBruta - deducoes;
-      var custos = byType.custo;
-      var lucroBruto = receitaLiq - custos;
-      var despOp = byType.despesa;
-      var lucroPre = lucroBruto - despOp;
-      var dna = byType.dna;
-      var resultadoUnidade = lucroPre - dna;
-      var investimentos = byType.investimento;
-      var financeiro = byType.financeiro;
-      var resultadoFinal = resultadoUnidade - investimentos - financeiro;
+      // ---- Calcular totais da DRE ----
+      var outrasReceitas = sumGroup('outra_receita');
+      var totalFaturamento = fatBruto + outrasReceitas;
+      var totalDeducoes = sumGroup('deducao');
+      var receitaBruta = totalFaturamento;
+      var receitaLiquida = receitaBruta - totalDeducoes;
 
-      var margemBruta = receitaBruta > 0 ? (lucroBruto / receitaBruta * 100) : 0;
-      var margemOp = receitaBruta > 0 ? (lucroPre / receitaBruta * 100) : 0;
+      var totalCMV = sumGroup('cmv');
+      var totalCustoVenda = sumGroup('custo_venda');
+      var custosTotais = totalCMV + totalCustoVenda;
+      var lucroBruto = receitaLiquida - custosTotais;
 
+      var totalDespPessoal = sumGroup('desp_pessoal');
+      var totalDespOperacao = sumGroup('desp_operacao');
+      var totalInvestUnidade = sumGroup('invest_unidade');
+      var despesasUnidades = totalDespPessoal + totalDespOperacao + totalInvestUnidade;
+      var lucroUnidades = lucroBruto - despesasUnidades;
+
+      var totalDnaPessoal = sumGroup('dna_pessoal');
+      var totalDnaAdmin = sumGroup('dna_admin');
+      var totalDnaMarketing = sumGroup('dna_marketing');
+      var totalDnaInvest = sumGroup('dna_invest');
+      var totalNaoIdentificado = sumGroup('nao_identificado');
+      var despesasGA = totalDnaPessoal + totalDnaAdmin + totalDnaMarketing + totalDnaInvest + totalNaoIdentificado;
+      var lucroOperacional = lucroUnidades - despesasGA;
+
+      var totalReceitaFin = sumGroup('receita_fin');
+      var totalDespesaFin = sumGroup('despesa_fin');
+      var totalFinanceiro = sumGroup('financeiro');
+      var lucroLiquido = lucroOperacional + totalReceitaFin - totalDespesaFin - totalFinanceiro;
+
+      var totalDistribuicao = sumGroup('distribuicao');
+      var resultadoExercicio = lucroLiquido - totalDistribuicao;
+
+      // ---- DRE Lines (hierárquica como a planilha) ----
       var dreLines = [
-        { label: 'FATURAMENTO COMERCIAL (Trinks)', value: fatBruto, bold: true, level: 0, type: null },
-        { label: '(+) Outras Receitas', value: outrasReceitas, bold: false, level: 1, type: 'outra_receita' },
-        { label: '= RECEITA BRUTA', value: receitaBruta, bold: true, level: 0, type: null, hl: true },
-        { label: '(-) Descontos / Deduções', value: -byType.deducao, bold: false, level: 1, type: 'deducao' },
-        { label: '(-) Impostos', value: -byType.imposto, bold: false, level: 1, type: 'imposto' },
-        { label: '= RECEITA LÍQUIDA', value: receitaLiq, bold: true, level: 0, type: null, hl: true },
-        { label: '(-) Custos (CSP/CMV)', value: -custos, bold: false, level: 1, type: 'custo' },
-        { label: '= LUCRO BRUTO', value: lucroBruto, bold: true, level: 0, type: null, hl: true },
-        { label: '(-) Despesas Operacionais', value: -despOp, bold: false, level: 1, type: 'despesa' },
-        { label: '= RESULTADO PRÉ-DNA', value: lucroPre, bold: true, level: 0, type: null, hl: true },
-        { label: '(-) Rateio DNA / G&A', value: -dna, bold: false, level: 1, type: 'dna' },
-        { label: '= RESULTADO DA UNIDADE', value: resultadoUnidade, bold: true, level: 0, type: null, hl: true, res: true },
-        { label: '(-) Investimentos (CAPEX)', value: -investimentos, bold: false, level: 1, type: 'investimento' },
-        { label: '(-) Financeiro', value: -financeiro, bold: false, level: 1, type: 'financeiro' },
-        { label: '= RESULTADO FINAL', value: resultadoFinal, bold: true, level: 0, type: null, hl: true, res: true },
+        // FATURAMENTO
+        { label: 'FATURAMENTO', value: totalFaturamento, bold: true, level: 0, hl: true, group: 'faturamento_all' },
+        { label: '1.1. Serviços de Bronze', value: (groups.faturamento['1.1. Serviços de Bronze'] || 0), bold: false, level: 1, group: null, sub: true },
+        { label: '1.2. Produtos', value: (groups.faturamento['1.2. Produtos'] || 0), bold: false, level: 1, group: null, sub: true },
+        { label: '(+) Outras Receitas', value: outrasReceitas, bold: false, level: 1, group: 'outra_receita' },
+
+        // RECEITA BRUTA = FATURAMENTO (já é a mesma coisa nesta estrutura)
+        { label: 'RECEITA BRUTA', value: receitaBruta, bold: true, level: 0, hl: true },
+
+        // DEDUÇÕES
+        { label: '(-) DEDUÇÕES', value: totalDeducoes, bold: true, level: 0, neg: true, group: 'deducao' },
+
+        // RECEITA LÍQUIDA
+        { label: 'RECEITA LÍQUIDA', value: receitaLiquida, bold: true, level: 0, hl: true },
+
+        // CUSTOS TOTAIS
+        { label: '(-) CUSTOS TOTAIS', value: custosTotais, bold: true, level: 0, neg: true },
+        { label: 'CMV', value: totalCMV, bold: false, level: 1, group: 'cmv' },
+        { label: 'Custo de Venda', value: totalCustoVenda, bold: false, level: 1, group: 'custo_venda' },
+
+        // LUCRO BRUTO
+        { label: 'LUCRO BRUTO', value: lucroBruto, bold: true, level: 0, hl: true, res: true },
+
+        // DESPESAS UNIDADES
+        { label: '(-) DESPESAS UNIDADES', value: despesasUnidades, bold: true, level: 0, neg: true },
+        { label: 'Despesas com Pessoal', value: totalDespPessoal, bold: false, level: 1, group: 'desp_pessoal' },
+        { label: 'Despesas com Operação', value: totalDespOperacao, bold: false, level: 1, group: 'desp_operacao' },
+        { label: 'Investimentos', value: totalInvestUnidade, bold: false, level: 1, group: 'invest_unidade' },
+
+        // LUCRO UNIDADES
+        { label: 'LUCRO UNIDADES', value: lucroUnidades, bold: true, level: 0, hl: true, res: true },
+
+        // DESPESAS G&A
+        { label: '(-) DESPESAS GERAL E ADMINISTRATIVAS', value: despesasGA, bold: true, level: 0, neg: true },
+        { label: 'Despesas com Pessoal G&A', value: totalDnaPessoal, bold: false, level: 1, group: 'dna_pessoal' },
+        { label: 'Despesas Administrativas', value: totalDnaAdmin, bold: false, level: 1, group: 'dna_admin' },
+        { label: 'Despesas com Marketing', value: totalDnaMarketing, bold: false, level: 1, group: 'dna_marketing' },
+        { label: 'Investimentos G&A', value: totalDnaInvest, bold: false, level: 1, group: 'dna_invest' },
+        { label: 'Não Identificados', value: totalNaoIdentificado, bold: false, level: 1, group: 'nao_identificado' },
+
+        // LUCRO OPERACIONAL
+        { label: 'LUCRO OPERACIONAL', value: lucroOperacional, bold: true, level: 0, hl: true, res: true },
+
+        // FINANCEIRO
+        { label: '(+) Receita Financeira', value: totalReceitaFin, bold: false, level: 0, group: 'receita_fin' },
+        { label: '(-) Despesa Financeira', value: totalDespesaFin, bold: false, level: 0, neg: true, group: 'despesa_fin' },
+        { label: '(-) Financeiro (Empréstimos)', value: totalFinanceiro, bold: false, level: 0, neg: true, group: 'financeiro' },
+
+        // LUCRO LÍQUIDO
+        { label: 'LUCRO LÍQUIDO', value: lucroLiquido, bold: true, level: 0, hl: true, res: true },
+
+        // DISTRIBUIÇÃO
+        { label: '(-) Distribuição de Lucros', value: totalDistribuicao, bold: false, level: 0, neg: true, group: 'distribuicao' },
+
+        // RESULTADO DO EXERCÍCIO
+        { label: 'RESULTADO DO EXERCÍCIO', value: resultadoExercicio, bold: true, level: 0, hl: true, res: true },
       ];
 
+      // Monthly DRE
       var monthKeys = Object.keys(byMonth).sort();
       var ML = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
       var dreMonthly = monthKeys.map(function(m) {
         var d = byMonth[m];
-        var rec = d.faturamento + d.outra_receita, ded = d.deducao + d.imposto, cst = d.custo, dsp = d.despesa, dn = d.dna;
-        return { mes: m, label: ML[parseInt(m.slice(5,7),10)-1] || m, faturamento: d.faturamento, outras: d.outra_receita, receita: rec, deducoes: ded, receitaLiq: rec-ded, custos: cst, lucroBruto: rec-ded-cst, despesas: dsp, lucroPre: rec-ded-cst-dsp, dna: dn, resultado: rec-ded-cst-dsp-dn };
+        var fat = d.faturamento + d.outra_receita;
+        var ded = d.deducao;
+        var recLiq = fat - ded;
+        var custos = d.cmv + d.custo_venda;
+        var lb = recLiq - custos;
+        var despU = d.desp_pessoal + d.desp_operacao + d.invest_unidade;
+        var lu = lb - despU;
+        var ga = d.dna_pessoal + d.dna_admin + d.dna_marketing + d.dna_invest + d.nao_identificado;
+        var lop = lu - ga;
+        var ll = lop + d.receita_fin - d.despesa_fin - d.financeiro;
+        var re = ll - d.distribuicao;
+        return {
+          mes: m, label: ML[parseInt(m.slice(5,7),10)-1] || m,
+          faturamento: fat, deducoes: ded, receitaLiq: recLiq,
+          custos: custos, lucroBruto: lb,
+          despUnidades: despU, lucroUnidades: lu,
+          despGA: ga, lucroOp: lop,
+          recFin: d.receita_fin, despFin: d.despesa_fin,
+          lucroLiq: ll, distribuicao: d.distribuicao,
+          resultado: re
+        };
       });
 
-      return { dreLines: dreLines, catDetail: catDetail, dreMonthly: dreMonthly, fatBruto: fatBruto, outrasReceitas: outrasReceitas, receitaBruta: receitaBruta, margemBruta: margemBruta, margemOp: margemOp, resultadoFinal: resultadoFinal };
+      var margemBruta = receitaBruta > 0 ? (lucroBruto / receitaBruta * 100) : 0;
+      var margemOp = receitaBruta > 0 ? (lucroOperacional / receitaBruta * 100) : 0;
+      var margemLiq = receitaBruta > 0 ? (lucroLiquido / receitaBruta * 100) : 0;
+
+      return {
+        dreLines: dreLines, groups: groups, dreMonthly: dreMonthly,
+        receitaBruta: receitaBruta, lucroBruto: lucroBruto,
+        lucroOperacional: lucroOperacional, lucroLiquido: lucroLiquido,
+        resultadoExercicio: resultadoExercicio,
+        margemBruta: margemBruta, margemOp: margemOp, margemLiq: margemLiq
+      };
     } catch(e) {
-      return { dreLines: [], catDetail: {}, dreMonthly: [], fatBruto: 0, outrasReceitas: 0, receitaBruta: 0, margemBruta: 0, margemOp: 0, resultadoFinal: 0 };
+      console.error('DRE error:', e);
+      return {
+        dreLines: [], groups: {}, dreMonthly: [],
+        receitaBruta: 0, lucroBruto: 0, lucroOperacional: 0,
+        lucroLiquido: 0, resultadoExercicio: 0,
+        margemBruta: 0, margemOp: 0, margemLiq: 0
+      };
     }
-  }, [statusFilter, drilldown, year, months]);
+  }, [statusFilter, drilldown, year, months, unitFilter]);
 
-  var expandedType = useState(null);
-  var expanded = expandedType[0];
-  var setExpanded = expandedType[1];
+  var expandedState = useState({});
+  var expanded = expandedState[0];
+  var setExpanded = expandedState[1];
+  function toggleGroup(grp) {
+    var next = Object.assign({}, expanded);
+    next[grp] = !next[grp];
+    setExpanded(next);
+  }
 
-  var unitLabel = (drilldown && drilldown.type === 'unidade') ? drilldown.value : 'Consolidado';
+  var unitLabel = unitFilter || 'Consolidado';
 
   return React.createElement("div", { className: "page" },
     React.createElement("div", { className: "page-title" },
@@ -149,52 +432,99 @@ const PageDRE = function(props) {
         React.createElement("div", { className: "status-line" }, unitLabel + " \u00b7 " + year)
       )
     ),
+
+    // Unit filter dropdown
+    React.createElement("div", { style: { display: "flex", gap: 12, alignItems: "center", marginBottom: 16 } },
+      React.createElement("label", { style: { fontSize: 13, color: "#b8c2c8", fontWeight: 600 } }, "Unidade:"),
+      React.createElement("select", {
+        value: selectedUnit,
+        onChange: function(e) { setSelectedUnit(e.target.value); },
+        style: {
+          background: "#11181d", color: "#fff", border: "1px solid #243038",
+          borderRadius: 8, padding: "6px 12px", fontSize: 13,
+          fontFamily: "var(--font-ui)", cursor: "pointer", minWidth: 180
+        }
+      },
+        React.createElement("option", { value: "" }, "Todas (Consolidado)"),
+        allUnits.map(function(u) {
+          return React.createElement("option", { key: u, value: u }, u);
+        })
+      )
+    ),
+
     React.createElement(DrilldownBadge, { drilldown: drilldown, onClear: function() { setDrilldown(null); } }),
 
     // KPIs
     React.createElement("div", { className: "row row-4" },
-      React.createElement(KpiTile, { label: "Faturamento", value: fmtK(dreData.fatBruto), tone: "cyan" }),
+      React.createElement(KpiTile, { label: "Receita Bruta", value: fmtK(dreData.receitaBruta), tone: "cyan" }),
       React.createElement(KpiTile, { label: "Margem Bruta", value: dreData.margemBruta.toFixed(1) + "%", tone: dreData.margemBruta >= 0 ? "green" : "red" }),
       React.createElement(KpiTile, { label: "Margem Operac.", value: dreData.margemOp.toFixed(1) + "%", tone: dreData.margemOp >= 0 ? "green" : "red" }),
-      React.createElement(KpiTile, { label: "Resultado Final", value: fmtK(dreData.resultadoFinal), tone: dreData.resultadoFinal >= 0 ? "green" : "red" })
+      React.createElement(KpiTile, { label: "Resultado", value: fmtK(dreData.resultadoExercicio), tone: dreData.resultadoExercicio >= 0 ? "green" : "red" })
     ),
 
     // DRE Table
     React.createElement("div", { className: "card", style: { padding: 24 } },
       React.createElement("h2", { className: "card-title" }, "Estrutura DRE"),
       React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 14, color: "#fff" } },
+        React.createElement("thead", null,
+          React.createElement("tr", { style: { borderBottom: "2px solid #243038" } },
+            React.createElement("th", { style: { padding: "10px 12px", textAlign: "left", color: "#b8c2c8", fontSize: 12 } }, "Linha"),
+            React.createElement("th", { style: { padding: "10px 12px", textAlign: "right", color: "#b8c2c8", fontSize: 12 } }, "Valor"),
+            React.createElement("th", { style: { padding: "10px 12px", textAlign: "right", color: "#b8c2c8", fontSize: 12 } }, "% RB")
+          )
+        ),
         React.createElement("tbody", null,
           dreData.dreLines.map(function(line, i) {
-            var isExp = line.type && dreData.catDetail[line.type] && Object.keys(dreData.catDetail[line.type]).length > 0;
-            var isOpen = expanded === line.type;
-            var lc = line.res ? (line.value >= 0 ? "#10b981" : "#ef4444") : "#fff";
-            var vc = line.value < 0 ? "#ef4444" : lc;
+            var grp = line.group;
+            var hasDetail = grp && dreData.groups[grp] && Object.keys(dreData.groups[grp]).length > 0;
+            var isOpen = grp && expanded[grp];
+
+            // Color logic
+            var lc = "#fff";
+            if (line.res) lc = line.value >= 0 ? "#10b981" : "#ef4444";
+            var displayVal = line.neg ? -line.value : line.value;
+            var vc = displayVal < 0 ? "#ef4444" : lc;
+            if (line.sub) { lc = "#b8c2c8"; vc = "#b8c2c8"; }
+
             var pct = dreData.receitaBruta > 0 ? (line.value / dreData.receitaBruta * 100).toFixed(1) + "%" : "\u2014";
+
             var rows = [];
             rows.push(
               React.createElement("tr", {
                 key: "l" + i,
-                style: { borderBottom: line.hl ? "2px solid #243038" : "1px solid #1a242a", background: line.hl ? "#11181d" : "transparent", cursor: isExp ? "pointer" : "default" },
-                onClick: isExp ? function() { setExpanded(isOpen ? null : line.type); } : undefined
+                style: {
+                  borderBottom: line.hl ? "2px solid #243038" : "1px solid #1a242a",
+                  background: line.hl ? "#11181d" : "transparent",
+                  cursor: hasDetail ? "pointer" : "default"
+                },
+                onClick: hasDetail ? function() { toggleGroup(grp); } : undefined
               },
-                React.createElement("td", { style: { padding: "10px 12px", paddingLeft: line.level * 24 + 12, fontWeight: line.bold ? 700 : 400, color: lc } },
-                  isExp ? (isOpen ? "\u25BC " : "\u25B6 ") : "",
+                React.createElement("td", {
+                  style: { padding: "10px 12px", paddingLeft: line.level * 24 + 12, fontWeight: line.bold ? 700 : 400, color: lc, fontSize: line.sub ? 13 : 14 }
+                },
+                  hasDetail ? (isOpen ? "\u25BC " : "\u25B6 ") : (line.sub ? "  \u2022 " : ""),
                   line.label
                 ),
-                React.createElement("td", { style: { padding: "10px 12px", textAlign: "right", fontWeight: line.bold ? 700 : 400, color: vc, fontFamily: "var(--font-mono, monospace)" } }, fmt(line.value)),
-                React.createElement("td", { style: { padding: "10px 12px", textAlign: "right", color: "#b8c2c8", fontSize: 12 } }, pct)
+                React.createElement("td", {
+                  style: { padding: "10px 12px", textAlign: "right", fontWeight: line.bold ? 700 : 400, color: vc, fontFamily: "var(--font-mono, monospace)" }
+                }, fmt(line.neg ? -line.value : line.value)),
+                React.createElement("td", {
+                  style: { padding: "10px 12px", textAlign: "right", color: "#6b7680", fontSize: 12 }
+                }, pct)
               )
             );
-            if (isOpen && dreData.catDetail[line.type]) {
-              var entries = Object.entries(dreData.catDetail[line.type]).sort(function(a,b) { return b[1] - a[1]; });
+
+            // Expanded detail rows
+            if (isOpen && dreData.groups[grp]) {
+              var entries = Object.entries(dreData.groups[grp]).sort(function(a,b) { return Math.abs(b[1]) - Math.abs(a[1]); });
               entries.forEach(function(entry) {
                 var cat = entry[0], val = entry[1];
                 var cpct = dreData.receitaBruta > 0 ? (val / dreData.receitaBruta * 100).toFixed(1) + "%" : "\u2014";
                 rows.push(
-                  React.createElement("tr", { key: "d" + cat, style: { borderBottom: "1px solid #1a242a", background: "#0d1216" } },
-                    React.createElement("td", { style: { padding: "6px 12px", paddingLeft: 60, fontSize: 13, color: "#b8c2c8" } }, cat),
-                    React.createElement("td", { style: { padding: "6px 12px", textAlign: "right", fontSize: 13, color: "#fff", fontFamily: "var(--font-mono, monospace)" } }, fmt(val)),
-                    React.createElement("td", { style: { padding: "6px 12px", textAlign: "right", fontSize: 11, color: "#b8c2c8" } }, cpct)
+                  React.createElement("tr", { key: "d-" + grp + "-" + cat, style: { borderBottom: "1px solid #1a242a", background: "#0d1216" } },
+                    React.createElement("td", { style: { padding: "6px 12px", paddingLeft: 60, fontSize: 12, color: "#8a9199" } }, cat),
+                    React.createElement("td", { style: { padding: "6px 12px", textAlign: "right", fontSize: 12, color: val < 0 ? "#ef4444" : "#b8c2c8", fontFamily: "var(--font-mono, monospace)" } }, fmt(line.neg ? -val : val)),
+                    React.createElement("td", { style: { padding: "6px 12px", textAlign: "right", fontSize: 11, color: "#6b7680" } }, cpct)
                   )
                 );
               });
@@ -208,10 +538,10 @@ const PageDRE = function(props) {
     // DRE Mensal
     dreData.dreMonthly.length > 0 ? React.createElement("div", { className: "card", style: { padding: 24, overflowX: "auto" } },
       React.createElement("h2", { className: "card-title" }, "DRE Mensal"),
-      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 12, minWidth: 800, color: "#fff" } },
+      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 12, minWidth: 900, color: "#fff" } },
         React.createElement("thead", null,
           React.createElement("tr", { style: { borderBottom: "2px solid #243038" } },
-            React.createElement("th", { style: { padding: 8, textAlign: "left", color: "#b8c2c8" } }, "Linha"),
+            React.createElement("th", { style: { padding: 8, textAlign: "left", color: "#b8c2c8", minWidth: 160 } }, "Linha"),
             dreData.dreMonthly.map(function(d) {
               return React.createElement("th", { key: d.mes, style: { padding: 8, textAlign: "right", minWidth: 75, color: "#b8c2c8" } }, d.label);
             }),
@@ -220,28 +550,31 @@ const PageDRE = function(props) {
         ),
         React.createElement("tbody", null,
           [
-            { key: "faturamento", label: "Faturamento (Trinks)", bold: true },
-            { key: "outras", label: "(+) Outras Receitas", bold: false },
-            { key: "receita", label: "Receita Bruta", bold: true },
-            { key: "deducoes", label: "(-) Dedu\u00e7\u00f5es", bold: false },
+            { key: "faturamento", label: "Faturamento", bold: true },
+            { key: "deducoes", label: "(-) Dedu\u00e7\u00f5es", bold: false, neg: true },
             { key: "receitaLiq", label: "Receita L\u00edquida", bold: true },
-            { key: "custos", label: "(-) Custos", bold: false },
-            { key: "lucroBruto", label: "Lucro Bruto", bold: true },
-            { key: "despesas", label: "(-) Despesas Op.", bold: false },
-            { key: "lucroPre", label: "Resultado Pr\u00e9-DNA", bold: true },
-            { key: "dna", label: "(-) DNA/G&A", bold: false },
-            { key: "resultado", label: "Resultado", bold: true }
+            { key: "custos", label: "(-) Custos", bold: false, neg: true },
+            { key: "lucroBruto", label: "Lucro Bruto", bold: true, res: true },
+            { key: "despUnidades", label: "(-) Desp. Unidades", bold: false, neg: true },
+            { key: "lucroUnidades", label: "Lucro Unidades", bold: true, res: true },
+            { key: "despGA", label: "(-) Desp. G&A", bold: false, neg: true },
+            { key: "lucroOp", label: "Lucro Operacional", bold: true, res: true },
+            { key: "recFin", label: "(+) Rec. Financeira", bold: false },
+            { key: "despFin", label: "(-) Desp. Financeira", bold: false, neg: true },
+            { key: "lucroLiq", label: "Lucro L\u00edquido", bold: true, res: true },
+            { key: "distribuicao", label: "(-) Distribui\u00e7\u00e3o", bold: false, neg: true },
+            { key: "resultado", label: "Resultado", bold: true, res: true }
           ].map(function(line) {
             var total = dreData.dreMonthly.reduce(function(s,d) { return s + (d[line.key] || 0); }, 0);
-            var isNeg = line.key.indexOf("(") === 0 || line.key === "deducoes" || line.key === "custos" || line.key === "despesas" || line.key === "dna";
             return React.createElement("tr", { key: line.key, style: { borderBottom: line.bold ? "2px solid #243038" : "1px solid #1a242a" } },
-              React.createElement("td", { style: { padding: 8, fontWeight: line.bold ? 700 : 400, color: "#fff" } }, line.label),
+              React.createElement("td", { style: { padding: 8, fontWeight: line.bold ? 700 : 400, color: line.res ? (total >= 0 ? "#10b981" : "#ef4444") : "#fff" } }, line.label),
               dreData.dreMonthly.map(function(d) {
                 var v = d[line.key] || 0;
-                var c = line.key === "resultado" ? (v >= 0 ? "#10b981" : "#ef4444") : "#fff";
-                return React.createElement("td", { key: d.mes, style: { padding: 8, textAlign: "right", fontFamily: "var(--font-mono, monospace)", fontWeight: line.bold ? 700 : 400, color: c } }, fmtK(isNeg ? -v : v));
+                var display = line.neg ? -v : v;
+                var c = line.res ? (v >= 0 ? "#10b981" : "#ef4444") : "#fff";
+                return React.createElement("td", { key: d.mes, style: { padding: 8, textAlign: "right", fontFamily: "var(--font-mono, monospace)", fontWeight: line.bold ? 700 : 400, color: c } }, fmtK(display));
               }),
-              React.createElement("td", { style: { padding: 8, textAlign: "right", fontWeight: 700, fontFamily: "var(--font-mono, monospace)", color: line.key === "resultado" ? (total >= 0 ? "#10b981" : "#ef4444") : "#fff" } }, fmtK(isNeg ? -total : total))
+              React.createElement("td", { style: { padding: 8, textAlign: "right", fontWeight: 700, fontFamily: "var(--font-mono, monospace)", color: line.res ? (total >= 0 ? "#10b981" : "#ef4444") : "#fff" } }, fmtK(line.neg ? -total : total))
             );
           })
         )
@@ -268,9 +601,6 @@ const PageFaturamentoTrinks = function(props) {
 
   var fatData = useMemo(function() {
     try {
-      // Faturamento = 100% Trinks (competência). Fonte dedicada window.TRINKS_TX,
-      // fora do pipeline de caixa (ALL_TX). Competência não depende do toggle
-      // Realizado/A vencer, então statusFilter é ignorado aqui.
       var ff = (window.TRINKS_TX || []);
       if (drilldown && drilldown.type === 'unidade') { var uv = drilldown.value; ff = ff.filter(function(r) { return r[8] === uv; }); }
       var y = String(year);
@@ -396,7 +726,10 @@ const PageLojas = function(props) {
         if (ct === 'transferencia') continue;
         if (!units[u]) units[u] = { receita: 0, despesa: 0, dna: 0 };
         if (r[0] === 'r') units[u].receita += r[5];
-        else { units[u].despesa += r[5]; if (ct === 'dna') units[u].dna += r[5]; }
+        else {
+          units[u].despesa += r[5];
+          if (ct === 'dna' || ct === 'dna_pessoal' || ct === 'dna_admin' || ct === 'dna_marketing' || ct === 'dna_invest') units[u].dna += r[5];
+        }
       }
       var result = Object.keys(units).map(function(name) {
         var d = units[name];
