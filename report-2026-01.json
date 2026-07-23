@@ -1,0 +1,66 @@
+{
+  "mes": "janeiro",
+  "ano": 2026,
+  "gerado_em": "2026-07-23T21:19:00.599Z",
+  "secoes": {
+    "visao_geral": {
+      "title": "Visão Geral — Janeiro 2026",
+      "analysis": "Em janeiro de 2026, o Grupo Bronze da GG registrou receita bruta de R$ 1.054.894,15, A receita líquida (após deduções de R$ 111.286,89) atingiu R$ 943.607,26. O lucro bruto foi de R$ 702.017,73, com margem bruta de 74,4%. O resultado operacional ficou em R$ 611.001,12 (margem operacional de 64,8%). O faturamento Trinks totalizou R$ 306.324,20, com destaque para a unidade Itaim (R$ 146.348,90).\n\n• Receita bruta de R$ 1.054.894,15 no mês, sendo R$ 831.561,19 em 1.1. Serviços de Bronze (78,8% do total).\n• Faturamento Trinks de R$ 306.324,20 — unidade líder: Itaim com R$ 146.348,90 (47,8% do Trinks).\n• Melhor margem por unidade: Franquias com 95,1% de margem de contribuição.\n• Margem bruta de 74,4% e margem operacional de 64,8%.\n• Custos diretos (CMV + CSP) totalizaram R$ 226.145,13, representando 21,4% da receita bruta."
+    },
+    "receita": {
+      "title": "Análise de Receita",
+      "analysis": "A receita bruta de janeiro/2026 foi de R$ 1.054.894,15. A principal fonte de receita continua sendo Serviços de Bronze com R$ 831.561,19 (78,8% do total), seguido por Produtos com R$ 130.482,20. Por unidade, Itaim lidera com R$ 451.526,97, seguido por GG House (R$ 289.420,23). O faturamento Trinks (serviços agendados via plataforma) totalizou R$ 306.324,20. Distribuição Trinks por unidade: Itaim: R$ 146.348,90, GG House: R$ 119.514,70, Menino Deus: R$ 28.856,70, Alphaville: R$ 11.603,90. As deduções totais (impostos, descontos, estornos) somaram R$ 111.286,89, resultando em receita líquida de R$ 943.607,26."
+    },
+    "despesa": {
+      "title": "Análise de Despesas",
+      "analysis": "As despesas totais classificadas (excluindo transferências e dividendos) somaram R$ 581.171,25 em janeiro/2026. Composição: Deduções R$ 111.286,89, Custos diretos R$ 226.145,13, Custos de venda R$ 15.444,40, Despesas de pessoal (operação) R$ 31.383,92, Despesas operacionais R$ 59.632,69, G&A (DNA) R$ 137.239,74. As 5 maiores categorias de despesa são: CMV - Compra produtos fornecedor (R$ 166.861,40), Simples Nacional - DAS (R$ 81.423,89), CSP - Produtos LABOTERRA (R$ 53.438,00), Aluguel (R$ 32.334,45), Pró-Labore (R$ 31.000,00). Por unidade de custo: Matriz: R$ 346.789,00, Itaim: R$ 117.232,77, GG House: R$ 74.396,24, Menino Deus: R$ 16.913,66, Alphaville: R$ 13.035,71, Capão: R$ 10.191,49."
+    },
+    "fluxo_caixa": {
+      "title": "Fluxo de Caixa e Resultado",
+      "analysis": "O DRE de janeiro/2026 apresenta: Receita Bruta R$ 1.054.894,15 → Receita Líquida R$ 943.607,26 (deduções de R$ 111.286,89). Lucro Bruto de R$ 702.017,73 (margem bruta 74,4%), após custos diretos de R$ 226.145,13 e custos de venda de R$ 15.444,40. O Resultado Operacional ficou em R$ 611.001,12 (margem operacional 64,8%), descontando despesas de pessoal (R$ 31.383,92) e operacionais (R$ 59.632,69). Após despesas G&A de R$ 137.239,74, o EBITDA proxy foi de R$ 473.761,38 (margem de 50,2%). O grupo mantém concentração de receita na unidade Itaim, que respondeu por 42,8% da receita total."
+    },
+    "tesouraria": {
+      "title": "Alertas e Riscos",
+      "analysis": "⚠ Unidade Alphaville com faturamento Trinks de apenas R$ 11.603,90, significativamente abaixo das demais. Avaliar ações de recuperação."
+    },
+    "comparativo": {
+      "title": "Recomendações Estratégicas",
+      "analysis": "1. Replicar as práticas comerciais da unidade Itaim nas demais, especialmente em Alphaville. O gap entre melhor e pior unidade é de R$ 134.745,00.\n\n2. Manter controle rigoroso sobre custos diretos (atualmente R$ 226.145,13). Buscar ganhos de escala nas compras de produtos e insumos.\n\n3. Monitorar despesas operacionais fixas (aluguel, condomínio, sistemas), que somaram R$ 59.632,69 no mês, buscando renegociação de contratos onde possível."
+    }
+  },
+  "conclusao": "Em janeiro de 2026, o Grupo Bronze da GG registrou receita bruta de R$1054,9K com margem bruta de 74,4% e margem operacional de 64,8%. O resultado operacional foi positivo em R$611,0K. Replicar as práticas comerciais da unidade Itaim nas demais, especialmente em Alphaville. O gap entre melhor e pior unidade é de R$ 134.745,00.",
+  "indicadores": {
+    "receita_bruta": 1054894.15,
+    "receita_liquida": 943607.26,
+    "lucro_bruto": 702017.73,
+    "resultado_operacional": 611001.12,
+    "margem_bruta": 74.4,
+    "margem_operacional": 64.75,
+    "margem_ebitda": 50.21,
+    "total_despesas": 581171.25,
+    "custos_diretos": 226145.13,
+    "custos_venda": 15444.4,
+    "deducoes": 111286.89,
+    "desp_pessoal": 31383.92,
+    "desp_operacao": 59632.69,
+    "total_dna": 137239.74,
+    "trinks_total": 306324.2,
+    "trinks_por_unidade": {
+      "Menino Deus": 28856.7,
+      "GG House": 119514.7,
+      "Alphaville": 11603.9,
+      "Itaim": 146348.9
+    },
+    "receita_por_unidade": {
+      "Itaim": 451526.97,
+      "GG House": 289420.23,
+      "Matriz": 108429.02,
+      "Menino Deus": 71640.42,
+      "Franquias": 53237.41,
+      "Alphaville": 43342.05,
+      "Capão": 37298.05
+    },
+    "var_receita_mom": null,
+    "var_trinks_mom": null
+  }
+}
