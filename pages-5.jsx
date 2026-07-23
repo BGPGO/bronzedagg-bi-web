@@ -313,11 +313,20 @@ const PageDRE = function(props) {
         { label: 'RESULTADO DO EXERCÍCIO', value: resultadoExercicio, bold: true, level: 0, hl: true, res: true },
       ];
 
-      // Monthly DRE
-      var monthKeys = Object.keys(byMonth).sort();
+      // Monthly DRE — sempre 12 meses (Jan-Dez)
       var ML = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-      var dreMonthly = monthKeys.map(function(m) {
-        var d = byMonth[m];
+      var emptyMonth = {
+        faturamento: 0, outra_receita: 0, deducao: 0,
+        cmv: 0, custo_venda: 0,
+        desp_pessoal: 0, desp_operacao: 0, invest_unidade: 0,
+        dna_pessoal: 0, dna_admin: 0, dna_marketing: 0, dna_invest: 0,
+        nao_identificado: 0, receita_fin: 0, despesa_fin: 0,
+        distribuicao: 0, financeiro: 0
+      };
+      var dreMonthly = [];
+      for (var mi = 1; mi <= 12; mi++) {
+        var mKey = y + '-' + String(mi).padStart(2, '0');
+        var d = byMonth[mKey] || emptyMonth;
         var fat = d.faturamento + d.outra_receita;
         var ded = d.deducao;
         var recLiq = fat - ded;
@@ -329,8 +338,8 @@ const PageDRE = function(props) {
         var lop = lu - ga;
         var ll = lop + d.receita_fin - d.despesa_fin - d.financeiro;
         var re = ll - d.distribuicao;
-        return {
-          mes: m, label: ML[parseInt(m.slice(5,7),10)-1] || m,
+        dreMonthly.push({
+          mes: mKey, label: ML[mi - 1],
           faturamento: fat, deducoes: ded, receitaLiq: recLiq,
           custos: custos, lucroBruto: lb,
           despUnidades: despU, lucroUnidades: lu,
@@ -338,8 +347,8 @@ const PageDRE = function(props) {
           recFin: d.receita_fin, despFin: d.despesa_fin,
           lucroLiq: ll, distribuicao: d.distribuicao,
           resultado: re
-        };
-      });
+        });
+      }
 
       var margemBruta = receitaBruta > 0 ? (lucroBruto / receitaBruta * 100) : 0;
       var margemOp = receitaBruta > 0 ? (lucroOperacional / receitaBruta * 100) : 0;
@@ -488,17 +497,17 @@ const PageDRE = function(props) {
       )
     ),
 
-    // DRE Mensal
-    dreData.dreMonthly.length > 0 ? React.createElement("div", { className: "card", style: { padding: 24, overflowX: "auto" } },
+    // DRE Mensal — sempre 12 meses
+    React.createElement("div", { className: "card", style: { padding: 24, overflowX: "auto" } },
       React.createElement("h2", { className: "card-title" }, "DRE Mensal"),
-      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 12, minWidth: 900, color: "#f5efe8" } },
+      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 11, minWidth: 1200, color: "#f5efe8" } },
         React.createElement("thead", null,
           React.createElement("tr", { style: { borderBottom: "2px solid #382c20" } },
-            React.createElement("th", { style: { padding: 8, textAlign: "left", color: "#c8b8a4", minWidth: 160 } }, "Linha"),
+            React.createElement("th", { style: { padding: "6px 8px", textAlign: "left", color: "#c8b8a4", minWidth: 140, fontSize: 11 } }, "Linha"),
             dreData.dreMonthly.map(function(d) {
-              return React.createElement("th", { key: d.mes, style: { padding: 8, textAlign: "right", minWidth: 75, color: "#c8b8a4" } }, d.label);
+              return React.createElement("th", { key: d.mes, style: { padding: "6px 4px", textAlign: "right", minWidth: 62, color: "#c8b8a4", fontSize: 11 } }, d.label);
             }),
-            React.createElement("th", { style: { padding: 8, textAlign: "right", fontWeight: 700, color: "#c8b8a4" } }, "Total")
+            React.createElement("th", { style: { padding: "6px 8px", textAlign: "right", fontWeight: 700, color: "#c8b8a4", fontSize: 11 } }, "Total")
           )
         ),
         React.createElement("tbody", null,
@@ -511,28 +520,28 @@ const PageDRE = function(props) {
             { key: "despUnidades", label: "(-) Desp. Unidades", bold: false, neg: true },
             { key: "lucroUnidades", label: "Lucro Unidades", bold: true, res: true },
             { key: "despGA", label: "(-) Desp. G&A", bold: false, neg: true },
-            { key: "lucroOp", label: "Lucro Operacional", bold: true, res: true },
-            { key: "recFin", label: "(+) Rec. Financeira", bold: false },
-            { key: "despFin", label: "(-) Desp. Financeira", bold: false, neg: true },
+            { key: "lucroOp", label: "Lucro Operac.", bold: true, res: true },
+            { key: "recFin", label: "(+) Rec. Financ.", bold: false },
+            { key: "despFin", label: "(-) Desp. Financ.", bold: false, neg: true },
             { key: "lucroLiq", label: "Lucro L\u00edquido", bold: true, res: true },
             { key: "distribuicao", label: "(-) Distribui\u00e7\u00e3o", bold: false, neg: true },
             { key: "resultado", label: "Resultado", bold: true, res: true }
           ].map(function(line) {
             var total = dreData.dreMonthly.reduce(function(s,d) { return s + (d[line.key] || 0); }, 0);
             return React.createElement("tr", { key: line.key, style: { borderBottom: line.bold ? "2px solid #382c20" : "1px solid #2a2018" } },
-              React.createElement("td", { style: { padding: 8, fontWeight: line.bold ? 700 : 400, color: line.res ? (total >= 0 ? "#10b981" : "#ef4444") : "#fff" } }, line.label),
+              React.createElement("td", { style: { padding: "6px 8px", fontWeight: line.bold ? 700 : 400, fontSize: 11, color: line.res ? (total >= 0 ? "#2ecc71" : "#e74c3c") : "#f5efe8", whiteSpace: "nowrap" } }, line.label),
               dreData.dreMonthly.map(function(d) {
                 var v = d[line.key] || 0;
                 var display = line.neg ? -v : v;
-                var c = line.res ? (v >= 0 ? "#10b981" : "#ef4444") : "#fff";
-                return React.createElement("td", { key: d.mes, style: { padding: 8, textAlign: "right", fontFamily: "var(--font-mono, monospace)", fontWeight: line.bold ? 700 : 400, color: c } }, fmtK(display));
+                var c = line.res ? (v >= 0 ? "#2ecc71" : "#e74c3c") : "#f5efe8";
+                return React.createElement("td", { key: d.mes, style: { padding: "6px 4px", textAlign: "right", fontFamily: "var(--font-mono, monospace)", fontWeight: line.bold ? 700 : 400, fontSize: 10.5, color: c } }, fmtK(display));
               }),
-              React.createElement("td", { style: { padding: 8, textAlign: "right", fontWeight: 700, fontFamily: "var(--font-mono, monospace)", color: line.res ? (total >= 0 ? "#10b981" : "#ef4444") : "#fff" } }, fmtK(line.neg ? -total : total))
+              React.createElement("td", { style: { padding: "6px 8px", textAlign: "right", fontWeight: 700, fontFamily: "var(--font-mono, monospace)", fontSize: 11, color: line.res ? (total >= 0 ? "#2ecc71" : "#e74c3c") : "#f5efe8" } }, fmtK(line.neg ? -total : total))
             );
           })
         )
       )
-    ) : null
+    )
   );
 };
 
