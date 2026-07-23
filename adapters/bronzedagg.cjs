@@ -286,6 +286,36 @@ module.exports = {
         });
         trCount++;
       }
+
+      // Descontos Trinks (valor negativo → lançar como despesa/dedução)
+      const descontos = num(r['Total (R$) Descontos']);
+      if (descontos < 0) {
+        movimentos.push({
+          id: `TR-DESC-${idCounter++}`,
+          fonte: 'trinks',
+          natureza: 'P',
+          status: 'PAGO',
+          realizado: true,
+          data_emissao: data,
+          data_vencimento: data,
+          data_pagamento: data,
+          data_competencia: data,
+          valor_total: Math.abs(descontos),
+          valor_pago: Math.abs(descontos),
+          valor_aberto: 0,
+          categoria: 'Descontos Trinks',
+          centro_custo: unitNorm,
+          cliente: nomeCliente || 'Faturamento Trinks',
+          conta_corrente: '',
+          codigo_banco: '',
+          observacao: `Descontos ${unitNorm} ${data}`,
+          tags: [...tags, 'DESCONTO'],
+          is_dna: false,
+          is_transferencia: false,
+          is_grupo: GRUPO_UNIDADES.includes(unitNorm),
+        });
+        trCount++;
+      }
     }
     console.log(`  ${trCount} lançamentos Trinks gerados`);
 

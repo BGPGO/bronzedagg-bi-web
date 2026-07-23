@@ -48,12 +48,6 @@
     "is_franquia_propria": false
   },
   {
-    "codigo": "Novo Hamburgo",
-    "descricao": "Novo Hamburgo",
-    "is_grupo": false,
-    "is_franquia_propria": false
-  },
-  {
     "codigo": "Sunglow",
     "descricao": "Sunglow",
     "is_grupo": false,
