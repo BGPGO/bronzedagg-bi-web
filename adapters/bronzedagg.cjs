@@ -101,7 +101,8 @@ module.exports = {
 
   async pull(config, dataDir) {
     fs.mkdirSync(dataDir, { recursive: true });
-    const drive = config.fontes.drive.base_path;
+    const workspace = '/app/workspace';
+    const drive = fs.existsSync(workspace) ? workspace : config.fontes.drive.base_path;
     const bgg = config.fontes.bronzedagg;
 
     // ====== 1. CONTA AZUL (despesas + receitas operacionais) ======
@@ -180,50 +181,25 @@ module.exports = {
       });
     }
 
-    // ====== 2. TRINKS (faturamento) — fonte: Relatório Sistema ======
-    const trFile = path.join(drive, bgg.trinks_file);
-    const trSheet = bgg.trinks_sheet || 'Relatório Sistema';
-    console.log('=== Lendo Trinks:', trFile, '→', trSheet);
-    const trWb = XLSX.readFile(trFile);
-    const trRows = XLSX.utils.sheet_to_json(trWb.Sheets[trSheet], { defval: '' });
-    console.log(`  ${trRows.length} linhas no Relatório Sistema`);
+    // ====== 2. TRINKS (faturamento) ======
+    // Fonte dupla: JSONs da pasta TRINKS/ (scraping) + Excel "Relatório Sistema" (consolidado).
+    // Os JSONs têm dados granulares por transação. O Excel pode ter dados agregados diários.
+    // Usamos ambos — dedup por unidade+mês pra não contar 2x.
 
     // Normalização de nomes de unidade do Trinks → padrão do BI
     const UNIT_NORM = {
-      'ALPHAVILLE': 'Alphaville',
-      'Alphaville': 'Alphaville',
-      'ITAIM': 'Itaim',
-      'Itaim': 'Itaim',
-      'GG House': 'GG House',
-      'Menino Deus': 'Menino Deus',
-      'Carlos Gomes': 'Carlos Gomes',
-      'Capão da Canoa': 'Capão',
+      'ALPHAVILLE': 'Alphaville', 'Alphaville': 'Alphaville',
+      'ITAIM': 'Itaim', 'Itaim': 'Itaim',
+      'BGG Alphaville': 'Alphaville', 'BGG Itaim': 'Itaim',
+      'BGG Menino Deus': 'Menino Deus', 'BGG GG House': 'GG House',
+      'GG House': 'GG House', 'Menino Deus': 'Menino Deus',
+      'Carlos Gomes': 'Carlos Gomes', 'Capão da Canoa': 'Capão',
       'Novo Hamburgo': 'Novo Hamburgo',
     };
 
-    // Agregar por unidade + data de atendimento (competência)
-    // Regra do Excel: 1.1. Serviços de Bronze = Serviços + Pacotes
-    //                 1.2. Produtos = Produtos
-    //                 Só Tipo="Pagamento" (excluir Estorno)
+    // Helper: gera movimentos Trinks a partir de serviços, produtos, descontos
     let trCount = 0;
-    for (const r of trRows) {
-      const tipo = r['Tipo'] || '';
-      if (tipo !== 'Pagamento') continue;
-
-      const rawUnit = r['Centro de Custo'] || '';
-      const unitNorm = UNIT_NORM[rawUnit] || rawUnit;
-      if (!unitNorm) continue;
-
-      // Data de Atendimento/Venda = competência
-      const dataAtend = r['Data de Atendimento/Venda'];
-      const data = isoDate(dataAtend);
-      if (!data) continue;
-
-      const servicos = num(r['Total (R$) Serviço']);
-      const produtos = num(r['Total (R$) Produtos']);
-      const pacotes = num(r['Total (R$) Pacotes']);
-      const nomeCliente = r['Nome do Cliente'] || '';
-
+    function pushTrinks(unitNorm, data, servicos, produtos, pacotes, descontos, nomeCliente) {
       const tags = ['FATURAMENTO'];
       if (GRUPO_UNIDADES.includes(unitNorm)) tags.push('GRUPO');
       if (FRANQUIAS_PROPRIAS.includes(unitNorm)) tags.push('FRANQUIA_PROPRIA');
@@ -232,92 +208,133 @@ module.exports = {
       const totalServicos = servicos + pacotes;
       if (totalServicos > 0) {
         movimentos.push({
-          id: `TR-SRV-${idCounter++}`,
-          fonte: 'trinks',
-          natureza: 'R',
-          status: 'RECEBIDO',
-          realizado: true,
-          data_emissao: data,
-          data_vencimento: data,
-          data_pagamento: data,
-          data_competencia: data,
-          valor_total: totalServicos,
-          valor_pago: totalServicos,
-          valor_aberto: 0,
-          categoria: '1.1. Serviços de Bronze',
-          centro_custo: unitNorm,
+          id: `TR-SRV-${idCounter++}`, fonte: 'trinks', natureza: 'R',
+          status: 'RECEBIDO', realizado: true,
+          data_emissao: data, data_vencimento: data, data_pagamento: data, data_competencia: data,
+          valor_total: totalServicos, valor_pago: totalServicos, valor_aberto: 0,
+          categoria: '1.1. Serviços de Bronze', centro_custo: unitNorm,
           cliente: nomeCliente || 'Faturamento Trinks',
-          conta_corrente: '',
-          codigo_banco: '',
-          observacao: `Serviços ${unitNorm} ${data}`,
-          tags,
-          is_dna: false,
-          is_transferencia: false,
-          is_grupo: GRUPO_UNIDADES.includes(unitNorm),
+          conta_corrente: '', codigo_banco: '',
+          observacao: `Serviços ${unitNorm} ${data}`, tags,
+          is_dna: false, is_transferencia: false, is_grupo: GRUPO_UNIDADES.includes(unitNorm),
         });
         trCount++;
       }
-
       // 1.2. Produtos
       if (produtos > 0) {
         movimentos.push({
-          id: `TR-PRD-${idCounter++}`,
-          fonte: 'trinks',
-          natureza: 'R',
-          status: 'RECEBIDO',
-          realizado: true,
-          data_emissao: data,
-          data_vencimento: data,
-          data_pagamento: data,
-          data_competencia: data,
-          valor_total: produtos,
-          valor_pago: produtos,
-          valor_aberto: 0,
-          categoria: '1.2. Produtos',
-          centro_custo: unitNorm,
+          id: `TR-PRD-${idCounter++}`, fonte: 'trinks', natureza: 'R',
+          status: 'RECEBIDO', realizado: true,
+          data_emissao: data, data_vencimento: data, data_pagamento: data, data_competencia: data,
+          valor_total: produtos, valor_pago: produtos, valor_aberto: 0,
+          categoria: '1.2. Produtos', centro_custo: unitNorm,
           cliente: nomeCliente || 'Faturamento Trinks',
-          conta_corrente: '',
-          codigo_banco: '',
-          observacao: `Produtos ${unitNorm} ${data}`,
-          tags,
-          is_dna: false,
-          is_transferencia: false,
-          is_grupo: GRUPO_UNIDADES.includes(unitNorm),
+          conta_corrente: '', codigo_banco: '',
+          observacao: `Produtos ${unitNorm} ${data}`, tags,
+          is_dna: false, is_transferencia: false, is_grupo: GRUPO_UNIDADES.includes(unitNorm),
         });
         trCount++;
       }
-
       // Descontos Trinks (valor negativo → lançar como despesa/dedução)
-      const descontos = num(r['Total (R$) Descontos']);
       if (descontos < 0) {
         movimentos.push({
-          id: `TR-DESC-${idCounter++}`,
-          fonte: 'trinks',
-          natureza: 'P',
-          status: 'PAGO',
-          realizado: true,
-          data_emissao: data,
-          data_vencimento: data,
-          data_pagamento: data,
-          data_competencia: data,
-          valor_total: Math.abs(descontos),
-          valor_pago: Math.abs(descontos),
-          valor_aberto: 0,
-          categoria: 'Descontos Trinks',
-          centro_custo: unitNorm,
+          id: `TR-DESC-${idCounter++}`, fonte: 'trinks', natureza: 'P',
+          status: 'PAGO', realizado: true,
+          data_emissao: data, data_vencimento: data, data_pagamento: data, data_competencia: data,
+          valor_total: Math.abs(descontos), valor_pago: Math.abs(descontos), valor_aberto: 0,
+          categoria: 'Descontos Trinks', centro_custo: unitNorm,
           cliente: nomeCliente || 'Faturamento Trinks',
-          conta_corrente: '',
-          codigo_banco: '',
-          observacao: `Descontos ${unitNorm} ${data}`,
-          tags: [...tags, 'DESCONTO'],
-          is_dna: false,
-          is_transferencia: false,
-          is_grupo: GRUPO_UNIDADES.includes(unitNorm),
+          conta_corrente: '', codigo_banco: '',
+          observacao: `Descontos ${unitNorm} ${data}`, tags: [...tags, 'DESCONTO'],
+          is_dna: false, is_transferencia: false, is_grupo: GRUPO_UNIDADES.includes(unitNorm),
         });
         trCount++;
       }
     }
-    console.log(`  ${trCount} lançamentos Trinks gerados`);
+
+    // ---- 2a. JSONs da pasta TRINKS/ (dados granulares do scraping) ----
+    const trinksDir = path.join(drive, 'TRINKS');
+    const coveredMonths = new Set(); // "Unidade|YYYY-MM" → já tem dados do JSON
+    if (fs.existsSync(trinksDir)) {
+      const jsonFiles = fs.readdirSync(trinksDir).filter(f => f.endsWith('.json') && !f.includes('forma_pgto') && !f.includes('debug'));
+      console.log(`=== Lendo TRINKS JSONs: ${jsonFiles.length} arquivos`);
+      for (const jf of jsonFiles) {
+        try {
+          const raw = JSON.parse(fs.readFileSync(path.join(trinksDir, jf), 'utf8'));
+          const rawUnit = raw.unidade || '';
+          const unitNorm = UNIT_NORM[rawUnit] || rawUnit;
+          if (!unitNorm) continue;
+          const periodo = raw.periodo || {};
+          const monthLabel = periodo.label || ''; // "2026-01"
+
+          // Resumo mensal: array na posição [2] do resumo_tabelas[0]
+          // Formato: ["", "Janeiro / 2026", nClientes, qtdAtend, ticketMedio,
+          //           serviços, produtos, pacotes, valePresente, creditoCliente,
+          //           descontos, ...]
+          const resumo = raw.resumo_tabelas;
+          if (resumo && resumo['0'] && resumo['0'][2]) {
+            const row = resumo['0'][2];
+            const parseBR = (s) => {
+              if (typeof s === 'number') return s;
+              if (!s || typeof s !== 'string') return 0;
+              return parseFloat(s.replace(/\./g, '').replace(',', '.')) || 0;
+            };
+            const servicos = parseBR(row[5]);
+            const produtos = parseBR(row[6]);
+            const pacotes = parseBR(row[7]);
+            const descontos = parseBR(row[10]);
+
+            // Usar o primeiro dia do mês como data
+            const dataIni = isoDate(periodo.ini);
+            if (dataIni && (servicos > 0 || produtos > 0)) {
+              pushTrinks(unitNorm, dataIni, servicos, produtos, pacotes, descontos, '');
+              coveredMonths.add(`${unitNorm}|${monthLabel}`);
+              console.log(`  ${jf}: ${unitNorm} ${monthLabel} → Serv=${servicos} Prod=${produtos} Pkt=${pacotes} Desc=${descontos}`);
+            }
+          }
+        } catch (e) {
+          console.warn(`  [warn] ${jf}: ${e.message}`);
+        }
+      }
+    }
+
+    // ---- 2b. Excel "Relatório Sistema" (complemento para meses que os JSONs não cobrem) ----
+    const trFile = path.join(drive, bgg.trinks_file);
+    const trSheet = bgg.trinks_sheet || 'Relatório Sistema';
+    if (fs.existsSync(trFile)) {
+      console.log(`=== Lendo Trinks Excel: ${trFile} → ${trSheet}`);
+      const trWb = XLSX.readFile(trFile);
+      const sheet = trWb.Sheets[trSheet];
+      if (sheet) {
+        const trRows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        console.log(`  ${trRows.length} linhas no ${trSheet}`);
+        // Agrupar por unidade+mês para checar overlap com JSONs
+        const xlByUnitMonth = {};
+        for (const r of trRows) {
+          const tipo = r['Tipo'] || '';
+          if (tipo !== 'Pagamento') continue;
+          const rawUnit = r['Centro de Custo'] || '';
+          const unitNorm = UNIT_NORM[rawUnit] || rawUnit;
+          if (!unitNorm) continue;
+          const dataAtend = r['Data de Atendimento/Venda'];
+          const data = isoDate(dataAtend);
+          if (!data) continue;
+          const ym = data.slice(0, 7); // YYYY-MM
+          const key = `${unitNorm}|${ym}`;
+          if (coveredMonths.has(key)) continue; // JSON já cobre esse mês
+          pushTrinks(unitNorm, data,
+            num(r['Total (R$) Serviço']),
+            num(r['Total (R$) Produtos']),
+            num(r['Total (R$) Pacotes']),
+            num(r['Total (R$) Descontos']),
+            r['Nome do Cliente'] || ''
+          );
+        }
+      } else {
+        console.warn(`  [warn] Sheet "${trSheet}" não encontrada em ${trFile}`);
+      }
+    }
+    console.log(`  ${trCount} lançamentos Trinks gerados (JSONs + Excel)`);
 
     console.log(`  Total movimentos consolidados: ${movimentos.length}`);
     console.log(`  - Conta Azul: ${movimentos.filter(m => m.fonte === 'conta-azul').length}`);

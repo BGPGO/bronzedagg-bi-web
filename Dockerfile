@@ -1,30 +1,35 @@
-# Coolify deploy — serve estática BI via nginx (mais previsível que Caddy
-# no setup do Coolify; veja issue de "exited:unhealthy" com caddy:2-alpine).
-#
-# Arquivos obrigatórios (sempre gerados por build-data.cjs + build-jsx.cjs):
-#   index.html, styles.css, data.js, app.bundle.js, nginx.conf
-#
-# Arquivos opcionais que cliente PODE não ter — placeholder gerado pelo
-# bgp-bi.cjs init (vazio) pra COPY não falhar:
-#   data-extras.js, saldos.json, assets/
-#
-# Reports IA pré-gerados (report*.json) NÃO são copiados aqui — são gerados
-# on-the-fly via backend ai-proxy. Cliente que cacheia local: adicionar COPYs.
-
 FROM nginx:alpine
 
-# Obrigatórios
-COPY index.html /usr/share/nginx/html/
-COPY styles.css /usr/share/nginx/html/
-COPY data.js /usr/share/nginx/html/
-COPY app.bundle.js /usr/share/nginx/html/
+RUN apk add --no-cache nodejs npm dcron tini ca-certificates curl \
+ && mkdir -p /app /var/log
 
-# Opcionais (placeholder vazio criado por bgp-bi.cjs init)
-COPY data-extras.js /usr/share/nginx/html/
-COPY saldos.json /usr/share/nginx/html/
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+# Scripts ETL + adapters
+COPY adapters/ ./adapters/
+COPY fetch-data.cjs build-data.cjs build-data-extras.cjs build-jsx.cjs ./
+COPY bi.config.js ./
+COPY components.jsx pages-*.jsx upsell-pages.jsx ./
+
+# Site estático
+COPY index.html styles.css /usr/share/nginx/html/
 COPY assets /usr/share/nginx/html/assets
-
-# Config nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+# Seed inicial (sobrescritos pelo cron)
+COPY data.js app.bundle.js /usr/share/nginx/html/
+COPY data-extras.js /usr/share/nginx/html/
+COPY saldos.json /usr/share/nginx/html/
+
+# Cron + entrypoint
+COPY crontab /etc/crontabs/root
+COPY refresh.sh entrypoint.sh download-xlsx.sh sync-supabase.sh /app/
+RUN sed -i 's/\r$//' /app/*.sh /etc/crontabs/root \
+ && chmod +x /app/refresh.sh /app/entrypoint.sh /app/download-xlsx.sh /app/sync-supabase.sh
+
 EXPOSE 80
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["/app/entrypoint.sh"]

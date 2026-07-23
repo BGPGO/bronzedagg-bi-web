@@ -1,20 +1,20 @@
 {
-  "fetched_at": "2026-07-23T20:41:14.934Z",
+  "fetched_at": "2026-07-23T20:59:08.176Z",
   "adapters": [
     "bronzedagg"
   ],
   "summaries": [
     {
       "adapter": "bronzedagg",
-      "timestamp": "2026-07-23T20:41:14.927Z",
+      "timestamp": "2026-07-23T20:59:08.170Z",
       "files": {
         "conta_azul": "G:\\Meu Drive\\BGP\\CLIENTES\\BI\\489. BRONZE DA GG\\BASES\\extrato_financeiroBronzedagg.xlsx",
         "trinks": "G:\\Meu Drive\\BGP\\CLIENTES\\BI\\489. BRONZE DA GG\\BASES\\[Grupo BGG] Faturamento 2026.xlsx"
       },
-      "records": 20221,
+      "records": 20257,
       "by_source": {
         "conta_azul": 16719,
-        "trinks": 3502
+        "trinks": 3538
       },
       "unidades": [
         "Alphaville",
