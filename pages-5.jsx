@@ -253,6 +253,20 @@ const PageDRE = function(props) {
       var totalDistribuicao = sumGroup('distribuicao');
       var resultadoExercicio = lucroLiquido - totalDistribuicao;
 
+      // ---- Grupos consolidados para totalizadores expansíveis ----
+      function mergeGroups() {
+        var merged = {};
+        for (var gi = 0; gi < arguments.length; gi++) {
+          var g = groups[arguments[gi]] || {};
+          for (var k in g) merged[k] = (merged[k] || 0) + g[k];
+        }
+        return merged;
+      }
+      groups.faturamento_all = Object.assign({}, groups.faturamento, groups.outra_receita);
+      groups.custos_total = mergeGroups('cmv', 'custo_venda');
+      groups.desp_unidades_total = mergeGroups('desp_pessoal', 'desp_operacao', 'invest_unidade');
+      groups.desp_ga_total = mergeGroups('dna_pessoal', 'dna_admin', 'dna_marketing', 'dna_invest', 'nao_identificado');
+
       // ---- DRE Lines (hierárquica como a planilha) ----
       var dreLines = [
         // FATURAMENTO
@@ -261,7 +275,7 @@ const PageDRE = function(props) {
         { label: '1.2. Produtos', value: (groups.faturamento['1.2. Produtos'] || 0), bold: false, level: 1, group: null, sub: true },
         { label: '(+) Outras Receitas', value: outrasReceitas, bold: false, level: 1, group: 'outra_receita' },
 
-        // RECEITA BRUTA = FATURAMENTO (já é a mesma coisa nesta estrutura)
+        // RECEITA BRUTA
         { label: 'RECEITA BRUTA', value: receitaBruta, bold: true, level: 0, hl: true },
 
         // DEDUÇÕES
@@ -271,7 +285,7 @@ const PageDRE = function(props) {
         { label: 'RECEITA LÍQUIDA', value: receitaLiquida, bold: true, level: 0, hl: true },
 
         // CUSTOS TOTAIS
-        { label: '(-) CUSTOS TOTAIS', value: custosTotais, bold: true, level: 0, neg: true },
+        { label: '(-) CUSTOS TOTAIS', value: custosTotais, bold: true, level: 0, neg: true, group: 'custos_total' },
         { label: 'CMV', value: totalCMV, bold: false, level: 1, group: 'cmv' },
         { label: 'Custo de Venda', value: totalCustoVenda, bold: false, level: 1, group: 'custo_venda' },
 
@@ -279,7 +293,7 @@ const PageDRE = function(props) {
         { label: 'LUCRO BRUTO', value: lucroBruto, bold: true, level: 0, hl: true, res: true },
 
         // DESPESAS UNIDADES
-        { label: '(-) DESPESAS UNIDADES', value: despesasUnidades, bold: true, level: 0, neg: true },
+        { label: '(-) DESPESAS UNIDADES', value: despesasUnidades, bold: true, level: 0, neg: true, group: 'desp_unidades_total' },
         { label: 'Despesas com Pessoal', value: totalDespPessoal, bold: false, level: 1, group: 'desp_pessoal' },
         { label: 'Despesas com Operação', value: totalDespOperacao, bold: false, level: 1, group: 'desp_operacao' },
         { label: 'Investimentos', value: totalInvestUnidade, bold: false, level: 1, group: 'invest_unidade' },
@@ -288,7 +302,7 @@ const PageDRE = function(props) {
         { label: 'LUCRO UNIDADES', value: lucroUnidades, bold: true, level: 0, hl: true, res: true },
 
         // DESPESAS G&A
-        { label: '(-) DESPESAS GERAL E ADMINISTRATIVAS', value: despesasGA, bold: true, level: 0, neg: true },
+        { label: '(-) DESPESAS GERAL E ADMINISTRATIVAS', value: despesasGA, bold: true, level: 0, neg: true, group: 'desp_ga_total' },
         { label: 'Despesas com Pessoal G&A', value: totalDnaPessoal, bold: false, level: 1, group: 'dna_pessoal' },
         { label: 'Despesas Administrativas', value: totalDnaAdmin, bold: false, level: 1, group: 'dna_admin' },
         { label: 'Despesas com Marketing', value: totalDnaMarketing, bold: false, level: 1, group: 'dna_marketing' },
