@@ -1,0 +1,61 @@
+{
+  "mes": "fevereiro",
+  "ano": 2026,
+  "gerado_em": "2026-07-23T21:19:00.602Z",
+  "resumo": "Em fevereiro de 2026, o Grupo Bronze da GG registrou receita bruta de R$ 848.410,43, representando uma queda de 19,6% em relação ao mês anterior. A receita líquida (após deduções de R$ 78.701,56) atingiu R$ 769.708,87. O lucro bruto foi de R$ 681.689,84, com margem bruta de 88,6%. O resultado operacional ficou em R$ 598.575,75 (margem operacional de 77,8%). O faturamento Trinks totalizou R$ 405.449,65, com destaque para a unidade Itaim (R$ 289.687,65).",
+  "destaques": [
+    "Receita bruta de R$ 848.410,43 no mês, sendo R$ 674.685,60 em 1.1. Serviços de Bronze (79,5% do total).",
+    "Faturamento Trinks de R$ 405.449,65 — unidade líder: Itaim com R$ 289.687,65 (71,4% do Trinks).",
+    "Melhor margem por unidade: Franquias com 97,0% de margem de contribuição.",
+    "Margem bruta de 88,6% e margem operacional de 77,8%.",
+    "Custos diretos (CMV + CSP) totalizaram R$ 80.589,31, representando 9,5% da receita bruta."
+  ],
+  "alertas": [
+    "Queda significativa de 19,6% na receita bruta em relação a janeiro. Necessário investigar causas e mitigar.",
+    "Unidade Alphaville com faturamento Trinks de apenas R$ 15.596,50, significativamente abaixo das demais. Avaliar ações de recuperação."
+  ],
+  "recomendacoes": [
+    "Replicar as práticas comerciais da unidade Itaim nas demais, especialmente em Alphaville. O gap entre melhor e pior unidade é de R$ 274.091,15.",
+    "Manter controle rigoroso sobre custos diretos (atualmente R$ 80.589,31). Buscar ganhos de escala nas compras de produtos e insumos.",
+    "Descontos Trinks representam R$ 36.101,55 (45,9% das deduções). Avaliar política de descontos e promoções para otimizar receita líquida.",
+    "Implementar campanhas de captação e retenção de clientes para reverter a tendência de queda de 19,6% na receita.",
+    "Monitorar despesas operacionais fixas (aluguel, condomínio, sistemas), que somaram R$ 55.890,44 no mês, buscando renegociação de contratos onde possível."
+  ],
+  "analise_receita": "A receita bruta de fevereiro/2026 foi de R$ 848.410,43, variação de -19,6% vs. janeiro. A principal fonte de receita continua sendo Serviços de Bronze com R$ 674.685,60 (79,5% do total), seguido por Produtos com R$ 104.531,10. Por unidade, Itaim lidera com R$ 455.262,56, seguido por GG House (R$ 149.586,22). O faturamento Trinks (serviços agendados via plataforma) totalizou R$ 405.449,65. Distribuição Trinks por unidade: Itaim: R$ 289.687,65, GG House: R$ 78.352,00, Menino Deus: R$ 21.813,50, Alphaville: R$ 15.596,50. As deduções totais (impostos, descontos, estornos) somaram R$ 78.701,56, resultando em receita líquida de R$ 769.708,87.",
+  "analise_despesa": "As despesas totais classificadas (excluindo transferências e dividendos) somaram R$ 376.407,10 em fevereiro/2026 (-35,2% vs. mês anterior). Composição: Deduções R$ 78.701,56, Custos diretos R$ 80.589,31, Custos de venda R$ 7.429,72, Despesas de pessoal (operação) R$ 27.223,65, Despesas operacionais R$ 55.890,44, G&A (DNA) R$ 126.518,43. As 5 maiores categorias de despesa são: CSP - Produtos LABOTERRA (R$ 62.242,00), Simples Nacional - DAS (R$ 42.600,01), Descontos Trinks (R$ 36.101,55), Aluguel (R$ 33.141,19), Pró-Labore (R$ 31.000,00). Por unidade de custo: Matriz: R$ 161.885,89, Itaim: R$ 122.047,50, GG House: R$ 52.107,52, Menino Deus: R$ 17.310,80, Capão: R$ 12.833,10, Alphaville: R$ 9.438,36.",
+  "analise_resultado": "O DRE de fevereiro/2026 apresenta: Receita Bruta R$ 848.410,43 → Receita Líquida R$ 769.708,87 (deduções de R$ 78.701,56). Lucro Bruto de R$ 681.689,84 (margem bruta 88,6%), após custos diretos de R$ 80.589,31 e custos de venda de R$ 7.429,72. O Resultado Operacional ficou em R$ 598.575,75 (margem operacional 77,8%), descontando despesas de pessoal (R$ 27.223,65) e operacionais (R$ 55.890,44). Após despesas G&A de R$ 126.518,43, o EBITDA proxy foi de R$ 472.057,32 (margem de 61,3%). Comparado a janeiro, o resultado operacional caiu 2,0%. O grupo mantém concentração de receita na unidade Itaim, que respondeu por 53,7% da receita total.",
+  "indicadores": {
+    "receita_bruta": 848410.43,
+    "receita_liquida": 769708.87,
+    "lucro_bruto": 681689.84,
+    "resultado_operacional": 598575.75,
+    "margem_bruta": 88.56,
+    "margem_operacional": 77.77,
+    "margem_ebitda": 61.33,
+    "total_despesas": 376407.1,
+    "custos_diretos": 80589.31,
+    "custos_venda": 7429.72,
+    "deducoes": 78701.56,
+    "desp_pessoal": 27223.65,
+    "desp_operacao": 55890.44,
+    "total_dna": 126518.43,
+    "trinks_total": 405449.65,
+    "trinks_por_unidade": {
+      "Menino Deus": 21813.5,
+      "GG House": 78352,
+      "Alphaville": 15596.5,
+      "Itaim": 289687.65
+    },
+    "receita_por_unidade": {
+      "Itaim": 455262.56,
+      "GG House": 149586.22,
+      "Matriz": 112208.35,
+      "Menino Deus": 48832.32,
+      "Alphaville": 37735.28,
+      "Franquias": 25773.44,
+      "Capão": 19012.26
+    },
+    "var_receita_mom": -19.57,
+    "var_trinks_mom": 32.36
+  }
+}
