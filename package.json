@@ -7,14 +7,19 @@
   "scripts": {
     "init": "node bgp-bi.cjs init",
     "fetch": "node fetch-data.cjs",
+    "scrape-trinks": "node scrape-trinks.cjs",
+    "scrape-trinks:headless": "node scrape-trinks.cjs --headless",
+    "scrape-trinks:mes": "node scrape-trinks.cjs --mes",
+    "trinks-xlsx": "node trinks-json-to-xlsx.cjs",
     "build": "node bgp-bi.cjs build",
     "publish": "node bgp-bi.cjs publish",
     "sync": "node bgp-bi.cjs sync"
   },
   "dependencies": {
-    "xlsx": "^0.18.5",
+    "dotenv": "^16.4.5",
     "esbuild": "^0.21.0",
-    "dotenv": "^16.4.5"
+    "playwright": "^1.61.1",
+    "xlsx": "^0.18.5"
   },
   "engines": {
     "node": ">=18"
