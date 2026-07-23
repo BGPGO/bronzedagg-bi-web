@@ -388,12 +388,12 @@ const PageDRE = function(props) {
 
     // Unit filter dropdown
     React.createElement("div", { style: { display: "flex", gap: 12, alignItems: "center", marginBottom: 16 } },
-      React.createElement("label", { style: { fontSize: 13, color: "#b8c2c8", fontWeight: 600 } }, "Unidade:"),
+      React.createElement("label", { style: { fontSize: 13, color: "#c8b8a4", fontWeight: 600 } }, "Unidade:"),
       React.createElement("select", {
         value: selectedUnit,
         onChange: function(e) { setSelectedUnit(e.target.value); },
         style: {
-          background: "#11181d", color: "#fff", border: "1px solid #243038",
+          background: "#1a1410", color: "#f5efe8", border: "1px solid #382c20",
           borderRadius: 8, padding: "6px 12px", fontSize: 13,
           fontFamily: "var(--font-ui)", cursor: "pointer", minWidth: 180
         }
@@ -418,12 +418,12 @@ const PageDRE = function(props) {
     // DRE Table
     React.createElement("div", { className: "card", style: { padding: 24 } },
       React.createElement("h2", { className: "card-title" }, "Estrutura DRE"),
-      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 14, color: "#fff" } },
+      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 14, color: "#f5efe8" } },
         React.createElement("thead", null,
-          React.createElement("tr", { style: { borderBottom: "2px solid #243038" } },
-            React.createElement("th", { style: { padding: "10px 12px", textAlign: "left", color: "#b8c2c8", fontSize: 12 } }, "Linha"),
-            React.createElement("th", { style: { padding: "10px 12px", textAlign: "right", color: "#b8c2c8", fontSize: 12 } }, "Valor"),
-            React.createElement("th", { style: { padding: "10px 12px", textAlign: "right", color: "#b8c2c8", fontSize: 12 } }, "% RB")
+          React.createElement("tr", { style: { borderBottom: "2px solid #382c20" } },
+            React.createElement("th", { style: { padding: "10px 12px", textAlign: "left", color: "#c8b8a4", fontSize: 12 } }, "Linha"),
+            React.createElement("th", { style: { padding: "10px 12px", textAlign: "right", color: "#c8b8a4", fontSize: 12 } }, "Valor"),
+            React.createElement("th", { style: { padding: "10px 12px", textAlign: "right", color: "#c8b8a4", fontSize: 12 } }, "% RB")
           )
         ),
         React.createElement("tbody", null,
@@ -437,7 +437,7 @@ const PageDRE = function(props) {
             if (line.res) lc = line.value >= 0 ? "#10b981" : "#ef4444";
             var displayVal = line.neg ? -line.value : line.value;
             var vc = displayVal < 0 ? "#ef4444" : lc;
-            if (line.sub) { lc = "#b8c2c8"; vc = "#b8c2c8"; }
+            if (line.sub) { lc = "#c8b8a4"; vc = "#c8b8a4"; }
 
             var pct = dreData.receitaBruta > 0 ? (line.value / dreData.receitaBruta * 100).toFixed(1) + "%" : "\u2014";
 
@@ -446,8 +446,8 @@ const PageDRE = function(props) {
               React.createElement("tr", {
                 key: "l" + i,
                 style: {
-                  borderBottom: line.hl ? "2px solid #243038" : "1px solid #1a242a",
-                  background: line.hl ? "#11181d" : "transparent",
+                  borderBottom: line.hl ? "2px solid #382c20" : "1px solid #2a2018",
+                  background: line.hl ? "#1a1410" : "transparent",
                   cursor: hasDetail ? "pointer" : "default"
                 },
                 onClick: hasDetail ? function() { toggleGroup(grp); } : undefined
@@ -462,7 +462,7 @@ const PageDRE = function(props) {
                   style: { padding: "10px 12px", textAlign: "right", fontWeight: line.bold ? 700 : 400, color: vc, fontFamily: "var(--font-mono, monospace)" }
                 }, fmt(line.neg ? -line.value : line.value)),
                 React.createElement("td", {
-                  style: { padding: "10px 12px", textAlign: "right", color: "#6b7680", fontSize: 12 }
+                  style: { padding: "10px 12px", textAlign: "right", color: "#8c7e6e", fontSize: 12 }
                 }, pct)
               )
             );
@@ -474,10 +474,10 @@ const PageDRE = function(props) {
                 var cat = entry[0], val = entry[1];
                 var cpct = dreData.receitaBruta > 0 ? (val / dreData.receitaBruta * 100).toFixed(1) + "%" : "\u2014";
                 rows.push(
-                  React.createElement("tr", { key: "d-" + grp + "-" + cat, style: { borderBottom: "1px solid #1a242a", background: "#0d1216" } },
-                    React.createElement("td", { style: { padding: "6px 12px", paddingLeft: 60, fontSize: 12, color: "#8a9199" } }, cat),
-                    React.createElement("td", { style: { padding: "6px 12px", textAlign: "right", fontSize: 12, color: val < 0 ? "#ef4444" : "#b8c2c8", fontFamily: "var(--font-mono, monospace)" } }, fmt(line.neg ? -val : val)),
-                    React.createElement("td", { style: { padding: "6px 12px", textAlign: "right", fontSize: 11, color: "#6b7680" } }, cpct)
+                  React.createElement("tr", { key: "d-" + grp + "-" + cat, style: { borderBottom: "1px solid #2a2018", background: "#140f0a" } },
+                    React.createElement("td", { style: { padding: "6px 12px", paddingLeft: 60, fontSize: 12, color: "#9e8e78" } }, cat),
+                    React.createElement("td", { style: { padding: "6px 12px", textAlign: "right", fontSize: 12, color: val < 0 ? "#ef4444" : "#c8b8a4", fontFamily: "var(--font-mono, monospace)" } }, fmt(line.neg ? -val : val)),
+                    React.createElement("td", { style: { padding: "6px 12px", textAlign: "right", fontSize: 11, color: "#8c7e6e" } }, cpct)
                   )
                 );
               });
@@ -491,14 +491,14 @@ const PageDRE = function(props) {
     // DRE Mensal
     dreData.dreMonthly.length > 0 ? React.createElement("div", { className: "card", style: { padding: 24, overflowX: "auto" } },
       React.createElement("h2", { className: "card-title" }, "DRE Mensal"),
-      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 12, minWidth: 900, color: "#fff" } },
+      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 12, minWidth: 900, color: "#f5efe8" } },
         React.createElement("thead", null,
-          React.createElement("tr", { style: { borderBottom: "2px solid #243038" } },
-            React.createElement("th", { style: { padding: 8, textAlign: "left", color: "#b8c2c8", minWidth: 160 } }, "Linha"),
+          React.createElement("tr", { style: { borderBottom: "2px solid #382c20" } },
+            React.createElement("th", { style: { padding: 8, textAlign: "left", color: "#c8b8a4", minWidth: 160 } }, "Linha"),
             dreData.dreMonthly.map(function(d) {
-              return React.createElement("th", { key: d.mes, style: { padding: 8, textAlign: "right", minWidth: 75, color: "#b8c2c8" } }, d.label);
+              return React.createElement("th", { key: d.mes, style: { padding: 8, textAlign: "right", minWidth: 75, color: "#c8b8a4" } }, d.label);
             }),
-            React.createElement("th", { style: { padding: 8, textAlign: "right", fontWeight: 700, color: "#b8c2c8" } }, "Total")
+            React.createElement("th", { style: { padding: 8, textAlign: "right", fontWeight: 700, color: "#c8b8a4" } }, "Total")
           )
         ),
         React.createElement("tbody", null,
@@ -519,7 +519,7 @@ const PageDRE = function(props) {
             { key: "resultado", label: "Resultado", bold: true, res: true }
           ].map(function(line) {
             var total = dreData.dreMonthly.reduce(function(s,d) { return s + (d[line.key] || 0); }, 0);
-            return React.createElement("tr", { key: line.key, style: { borderBottom: line.bold ? "2px solid #243038" : "1px solid #1a242a" } },
+            return React.createElement("tr", { key: line.key, style: { borderBottom: line.bold ? "2px solid #382c20" : "1px solid #2a2018" } },
               React.createElement("td", { style: { padding: 8, fontWeight: line.bold ? 700 : 400, color: line.res ? (total >= 0 ? "#10b981" : "#ef4444") : "#fff" } }, line.label),
               dreData.dreMonthly.map(function(d) {
                 var v = d[line.key] || 0;
@@ -612,21 +612,21 @@ const PageFaturamentoTrinks = function(props) {
     ),
     monthKeys.length > 0 ? React.createElement("div", { className: "card", style: { padding: 24, overflowX: "auto" } },
       React.createElement("h2", { className: "card-title" }, "Faturamento Mensal"),
-      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 13, color: "#fff" } },
+      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 13, color: "#f5efe8" } },
         React.createElement("thead", null,
-          React.createElement("tr", { style: { borderBottom: "2px solid #243038" } },
-            React.createElement("th", { style: { padding: 8, textAlign: "left", color: "#b8c2c8" } }, "M\u00eas"),
-            React.createElement("th", { style: { padding: 8, textAlign: "right", color: "#b8c2c8" } }, "Servi\u00e7os"),
-            React.createElement("th", { style: { padding: 8, textAlign: "right", color: "#b8c2c8" } }, "Produtos"),
-            React.createElement("th", { style: { padding: 8, textAlign: "right", color: "#b8c2c8" } }, "Outros"),
-            React.createElement("th", { style: { padding: 8, textAlign: "right", fontWeight: 700, color: "#b8c2c8" } }, "Total")
+          React.createElement("tr", { style: { borderBottom: "2px solid #382c20" } },
+            React.createElement("th", { style: { padding: 8, textAlign: "left", color: "#c8b8a4" } }, "M\u00eas"),
+            React.createElement("th", { style: { padding: 8, textAlign: "right", color: "#c8b8a4" } }, "Servi\u00e7os"),
+            React.createElement("th", { style: { padding: 8, textAlign: "right", color: "#c8b8a4" } }, "Produtos"),
+            React.createElement("th", { style: { padding: 8, textAlign: "right", color: "#c8b8a4" } }, "Outros"),
+            React.createElement("th", { style: { padding: 8, textAlign: "right", fontWeight: 700, color: "#c8b8a4" } }, "Total")
           )
         ),
         React.createElement("tbody", null,
           monthKeys.map(function(m) {
             var d = fatData.byMonth[m];
             var mi = parseInt(m.slice(5,7),10) - 1;
-            return React.createElement("tr", { key: m, style: { borderBottom: "1px solid #1a242a" } },
+            return React.createElement("tr", { key: m, style: { borderBottom: "1px solid #2a2018" } },
               React.createElement("td", { style: { padding: 8 } }, ML[mi] + "/" + m.slice(0,4)),
               React.createElement("td", { style: { padding: 8, textAlign: "right", fontFamily: "var(--font-mono)" } }, fmtK(d.servicos)),
               React.createElement("td", { style: { padding: 8, textAlign: "right", fontFamily: "var(--font-mono)" } }, fmtK(d.produtos)),
@@ -711,23 +711,23 @@ const PageLojas = function(props) {
     ),
     React.createElement("div", { className: "card", style: { padding: 24 } },
       React.createElement("h2", { className: "card-title" }, "Resultado por Unidade"),
-      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 13, color: "#fff" } },
+      React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 13, color: "#f5efe8" } },
         React.createElement("thead", null,
-          React.createElement("tr", { style: { borderBottom: "2px solid #243038" } },
-            React.createElement("th", { style: { padding: 10, textAlign: "left", color: "#b8c2c8" } }, "Unidade"),
-            React.createElement("th", { style: { padding: 10, textAlign: "center", color: "#b8c2c8", fontSize: 11 } }, "Grupo"),
-            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#b8c2c8" } }, "Receita"),
-            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#b8c2c8" } }, "Despesa"),
-            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#b8c2c8" } }, "DNA"),
-            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#b8c2c8" } }, "Resultado"),
-            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#b8c2c8" } }, "Margem")
+          React.createElement("tr", { style: { borderBottom: "2px solid #382c20" } },
+            React.createElement("th", { style: { padding: 10, textAlign: "left", color: "#c8b8a4" } }, "Unidade"),
+            React.createElement("th", { style: { padding: 10, textAlign: "center", color: "#c8b8a4", fontSize: 11 } }, "Grupo"),
+            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#c8b8a4" } }, "Receita"),
+            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#c8b8a4" } }, "Despesa"),
+            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#c8b8a4" } }, "DNA"),
+            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#c8b8a4" } }, "Resultado"),
+            React.createElement("th", { style: { padding: 10, textAlign: "right", color: "#c8b8a4" } }, "Margem")
           )
         ),
         React.createElement("tbody", null,
           unitsData.units.map(function(u) {
-            return React.createElement("tr", { key: u.name, style: { borderBottom: "1px solid #1a242a", cursor: "pointer" }, onClick: function() { setDrilldown({ type: "unidade", value: u.name, label: u.name }); } },
-              React.createElement("td", { style: { padding: 10, fontWeight: 600, color: "#fff" } }, u.name),
-              React.createElement("td", { style: { padding: 10, textAlign: "center", color: "#b8c2c8" } }, u.isGrupo ? "\u2713" : "\u2014"),
+            return React.createElement("tr", { key: u.name, style: { borderBottom: "1px solid #2a2018", cursor: "pointer" }, onClick: function() { setDrilldown({ type: "unidade", value: u.name, label: u.name }); } },
+              React.createElement("td", { style: { padding: 10, fontWeight: 600, color: "#f5efe8" } }, u.name),
+              React.createElement("td", { style: { padding: 10, textAlign: "center", color: "#c8b8a4" } }, u.isGrupo ? "\u2713" : "\u2014"),
               React.createElement("td", { style: { padding: 10, textAlign: "right", fontFamily: "var(--font-mono)", color: "#10b981" } }, fmtK(u.receita)),
               React.createElement("td", { style: { padding: 10, textAlign: "right", fontFamily: "var(--font-mono)", color: "#ef4444" } }, fmtK(u.despesa)),
               React.createElement("td", { style: { padding: 10, textAlign: "right", fontFamily: "var(--font-mono)", color: "#f59e0b" } }, fmtK(u.dna)),
