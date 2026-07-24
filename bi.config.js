@@ -75,12 +75,12 @@ module.exports = {
       "1.11. Taxa de Franquia": "receita",
       "Receita não operacional": "receita",
       "Receitas a identificar": "receita",
-      "Reembolso Studios": "receita",
+      "Reembolso Studios": "transferencia",
 
       // === DEDUÇÕES ===
       "Descontos Trinks": "deducao",
       "Simples Nacional - DAS": "deducao",
-      "Devolução/Estorno Cliente": "deducao",
+      "Devolução/Estorno Cliente": "transferencia",
       "ISS/Tributos": "deducao",
       "ICMS": "deducao",
 
@@ -188,7 +188,7 @@ module.exports = {
 
       // === RECEITA FINANCEIRA ===
       "Juros recebidos": "receita_fin",
-      "Rendimento Aplicação": "receita_fin",
+      "Rendimento Aplicação": "transferencia",
 
       // === DESPESA FINANCEIRA ===
       "Juros e Multas": "despesa_fin",

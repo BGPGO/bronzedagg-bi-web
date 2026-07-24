@@ -1,4 +1,4 @@
-/* BGP BI — gerado por build-data.cjs em 2026-07-23T20:59:11.903Z */
+/* BGP BI — gerado por build-data.cjs em 2026-07-24T12:29:40.682Z */
 /* Empresa: Grupo Bronze da GG | Ano ref: 2026 */
 const MONTHS = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
 const MONTHS_FULL = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -49,10 +49,10 @@ const META = {
     "1.11. Taxa de Franquia": "receita",
     "Receita não operacional": "receita",
     "Receitas a identificar": "receita",
-    "Reembolso Studios": "receita",
+    "Reembolso Studios": "transferencia",
     "Descontos Trinks": "deducao",
     "Simples Nacional - DAS": "deducao",
-    "Devolução/Estorno Cliente": "deducao",
+    "Devolução/Estorno Cliente": "transferencia",
     "ISS/Tributos": "deducao",
     "ICMS": "deducao",
     "CMV - Compra produtos fornecedor": "custo",
@@ -138,7 +138,7 @@ const META = {
     "Despesas a identificar": "nao_identificado",
     "Cartão de crédito": "nao_identificado",
     "Juros recebidos": "receita_fin",
-    "Rendimento Aplicação": "receita_fin",
+    "Rendimento Aplicação": "transferencia",
     "Juros e Multas": "despesa_fin",
     "IOF": "despesa_fin",
     "Dividendos": "distribuicao",
