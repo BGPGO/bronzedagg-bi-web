@@ -24,6 +24,9 @@ COPY data.js app.bundle.js /usr/share/nginx/html/
 COPY data-extras.js /usr/share/nginx/html/
 COPY saldos.json /usr/share/nginx/html/
 
+# Relatórios IA pré-gerados
+COPY report-*.json /usr/share/nginx/html/
+
 # Cron + entrypoint
 COPY crontab /etc/crontabs/root
 COPY refresh.sh entrypoint.sh download-xlsx.sh sync-supabase.sh /app/
