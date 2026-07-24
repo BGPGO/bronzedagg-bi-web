@@ -1,0 +1,51 @@
+{
+  "secoes": {
+    "visao_geral": {
+      "title": "Visão Geral — Acumulado 2026 (Jan-Jun)",
+      "analysis": "No primeiro semestre de 2026, o Grupo Bronze da GG acumulou receita bruta de R$4,64M, com receita líquida de R$4,15M após deduções de R$490K. A margem bruta ficou em 72,9% e a margem operacional em 45,3%, demonstrando solidez operacional.\n\n• Faturamento Trinks (competência): R$1,94M em 6 meses\n• Unidade líder: Itaim com R$1264K\n• Custos diretos (CMV): R$701K\n• Despesas G&A: R$768K\n• Resultado operacional acumulado: R$2103K"
+    },
+    "receita": {
+      "title": "Análise de Receita",
+      "analysis": "A receita bruta acumulada no 1º semestre foi de R$4,64M. O faturamento via Trinks totalizou R$1,94M, representando a principal fonte de receita do grupo.\n\nPor unidade Trinks:\n• Itaim: R$1264K (65.1%)\n• GG House: R$468K (24.1%)\n• Menino Deus: R$127K (6.5%)\n• Alphaville: R$84K (4.3%)\n\nA tendência mensal mostrou queda de receita de janeiro (mês mais forte com R$1055K) até maio (R$609K), uma redução de 42%. A sazonalidade do inverno impacta diretamente o serviço de bronzeamento. Junho mostrou recuperação parcial."
+    },
+    "despesa": {
+      "title": "Análise de Despesas",
+      "analysis": "As despesas totais no semestre somaram R$2,54M. Os principais drivers de custo foram:\n\n• Custos diretos (CMV/CSP): R$701K — dominados por compras de produtos LABOTERRA e fornecedores\n• Custos de venda (maquininha/comissões): R$69K\n• Despesas com pessoal: R$173K\n• Despesas operacionais: R$339K\n• DNA/G&A (rateio): R$768K\n\nA estrutura de custos fixos (aluguel, pessoal G&A, pró-labore, consultoria) pressiona a margem nos meses de menor faturamento."
+    },
+    "fluxo_caixa": {
+      "title": "Resultado Operacional",
+      "analysis": "O resultado operacional acumulado do semestre foi de R$2103K, com margem operacional de 45,3%. A margem bruta de 72,9% indica boa eficiência na operação de bronze, mas as despesas G&A de R$768K consomem parte significativa da margem.\n\nEvolução mensal do resultado:\n• Janeiro: R$611K (64.8%)\n• Fevereiro: R$599K (77.8%)\n• Março: R$467K (73.7%)\n• Abril: R$340K (52.2%)\n• Maio: R$388K (70.5%)\n• Junho: R$466K (77.3%)"
+    },
+    "tesouraria": {
+      "title": "Alertas e Riscos",
+      "analysis": "⚠ Sazonalidade: o faturamento caiu de R$1055K (janeiro) para R$609K (maio), uma queda de 42%. O inverno impacta diretamente a demanda por bronze.\n\n⚠ Concentração: Itaim concentra 65% do faturamento Trinks. Dependência alta de uma única unidade.\n\n⚠ Custos fixos: a estrutura de G&A (R$768K no semestre) é pesada para meses de baixo faturamento, comprimindo margens.\n\n⚠ Alphaville é a unidade com menor faturamento (R$84K). Avaliar estratégias de crescimento."
+    },
+    "comparativo": {
+      "title": "Recomendações Estratégicas",
+      "analysis": "1. Combater sazonalidade: criar promoções e pacotes especiais para inverno (maio-agosto), incentivando manutenção do bronze mesmo no frio.\n\n2. Diversificar receita: ampliar venda de produtos com kits home care e programas de fidelidade.\n\n3. Otimizar G&A: revisar contratos de consultoria, marketing e assessoria para reduzir custos fixos em meses de baixa.\n\n4. Expandir unidades menores: investir em marketing local e parcerias com influenciadoras nas unidades de menor faturamento.\n\n5. Negociar CMV: renegociar com LABOTERRA (principal fornecedor) buscando desconto por volume.\n\n6. Controlar descontos: segmentar cupons por tipo (aquisição vs retenção) e medir ROI de cada campanha."
+    }
+  },
+  "conclusao": "O primeiro semestre de 2026 do Grupo Bronze da GG registrou receita bruta acumulada de R$4,64M com margem bruta de 72,9% e resultado operacional de R$2103K. A operação se mostra saudável mas com pressão sazonal nos meses de inverno e estrutura de G&A que demanda atenção contínua. O foco para o 2º semestre deve ser na retenção de clientes durante o inverno e na preparação para a alta temporada de verão.",
+  "indicadores": {
+    "receita_bruta": 4641955.01,
+    "receita_liquida": 4152159.3499999996,
+    "lucro_bruto": 3382770.9,
+    "resultado_operacional": 2103183.09,
+    "margem_bruta": 72.9,
+    "margem_operacional": 45.3,
+    "total_despesas": 2539332.1,
+    "custos_diretos": 700640.6699999999,
+    "custos_venda": 68747.78,
+    "deducoes": 489795.66,
+    "desp_pessoal": 173230.80000000002,
+    "desp_operacao": 338801.66,
+    "total_dna": 767555.3500000001,
+    "trinks_total": 1942155.3900000001,
+    "trinks_por_unidade": {
+      "Menino Deus": 126662.45,
+      "GG House": 467736.91000000003,
+      "Alphaville": 84173,
+      "Itaim": 1263583.03
+    }
+  }
+}
