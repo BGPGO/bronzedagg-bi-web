@@ -25,7 +25,7 @@ COPY data-extras.js /usr/share/nginx/html/
 COPY saldos.json /usr/share/nginx/html/
 
 # Relatórios IA pré-gerados
-COPY report-*.json /usr/share/nginx/html/
+COPY report.json report-*.json /usr/share/nginx/html/
 
 # Cron + entrypoint
 COPY crontab /etc/crontabs/root
