@@ -1,4 +1,4 @@
-/* BGP BI — gerado por build-data.cjs em 2026-07-24T13:32:29.372Z */
+/* BGP BI — gerado por build-data.cjs em 2026-07-24T13:48:45.402Z */
 /* Empresa: Grupo Bronze da GG | Ano ref: 2026 */
 const MONTHS = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
 const MONTHS_FULL = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -18365,6 +18365,17 @@ window.recomputeBit = function (statusFilter, drilldown, year) {
     }),
   }));
 
+  // Recomputa RECEITA_DIA e DESPESA_DIA
+  const RECEITA_DIA = Array(31).fill(0);
+  const DESPESA_DIA = Array(31).fill(0);
+  for (const r of filtered) {
+    if (!r[1] || Number(r[1].slice(0,4)) !== y) continue;
+    const dia = r[2];
+    if (dia < 1 || dia > 31) continue;
+    if (r[0] === 'r') RECEITA_DIA[dia - 1] += r[5];
+    else DESPESA_DIA[dia - 1] += r[5];
+  }
+
   // Recomputa SALDOS_MES cumulativos
   const SALDOS_MES = [];
   let saldo = 0;
@@ -18408,6 +18419,9 @@ window.recomputeBit = function (statusFilter, drilldown, year) {
     VALOR_LIQ_SERIES: agg.KPIS.VALOR_LIQ_SERIES || [],
     COMP_DATA,
     SALDOS_MES,
+    RECEITA_DIA,
+    DESPESA_DIA,
+    DIAS: Array.from({ length: 31 }, (_, i) => i + 1),
     RECDESP_AREA: agg.MONTH_DATA.map(m => ({ m: m.m.slice(0,3), receita: m.receita, despesa: m.despesa })),
   });
 };

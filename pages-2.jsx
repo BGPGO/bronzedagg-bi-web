@@ -420,7 +420,10 @@ const PageTesouraria = ({ filters, setFilters, onOpenFilters, statusFilter, dril
 
   // Dados diários do ano inteiro (pra pulso e pra KPIs filtrados)
   const dailyData = useMemo(() => {
-    const allTx = window.ALL_TX || [];
+    const rawTx = window.ALL_TX || [];
+    const allTx = drilldown && drilldown.type === 'unidade'
+      ? rawTx.filter(r => r[8] === drilldown.value)
+      : rawTx;
     const y = (B.META && B.META.ref_year) || new Date().getFullYear();
     const recTxReal = allTx.filter(r => r[0] === 'r' && r[6] === 1);
     const despTxReal = allTx.filter(r => r[0] === 'd' && r[6] === 1);
@@ -446,16 +449,19 @@ const PageTesouraria = ({ filters, setFilters, onOpenFilters, statusFilter, dril
       });
     }
     return { diasDoAno, allTx, y };
-  }, [B.META]);
+  }, [B.META, drilldown]);
 
   // KPIs: se um dia está selecionado, filtra pra aquele dia
   const kpis = useMemo(() => {
     if (!selectedDay) {
+      // Recomputa com drilldown pra respeitar filtro de unidade
+      const bReal = window.getBit('realizado', drilldown, year, months);
+      const bPend = window.getBit('a_pagar_receber', drilldown, year, months);
       return {
-        recebido: (SEG.realizado && SEG.realizado.KPIS && SEG.realizado.KPIS.TOTAL_RECEITA) || 0,
-        aReceber: (SEG.a_pagar_receber && SEG.a_pagar_receber.KPIS && SEG.a_pagar_receber.KPIS.TOTAL_RECEITA) || 0,
-        pago: (SEG.realizado && SEG.realizado.KPIS && SEG.realizado.KPIS.TOTAL_DESPESA) || 0,
-        aPagar: (SEG.a_pagar_receber && SEG.a_pagar_receber.KPIS && SEG.a_pagar_receber.KPIS.TOTAL_DESPESA) || 0,
+        recebido: (bReal.KPIS && bReal.KPIS.TOTAL_RECEITA) || bReal.TOTAL_RECEITA || 0,
+        aReceber: (bPend.KPIS && bPend.KPIS.TOTAL_RECEITA) || bPend.TOTAL_RECEITA || 0,
+        pago: (bReal.KPIS && bReal.KPIS.TOTAL_DESPESA) || bReal.TOTAL_DESPESA || 0,
+        aPagar: (bPend.KPIS && bPend.KPIS.TOTAL_DESPESA) || bPend.TOTAL_DESPESA || 0,
       };
     }
     const allTx = dailyData.allTx;
@@ -470,7 +476,7 @@ const PageTesouraria = ({ filters, setFilters, onOpenFilters, statusFilter, dril
       }
     }
     return { recebido: recReal, aReceber: recPend, pago: despReal, aPagar: despPend };
-  }, [selectedDay, SEG, dailyData]);
+  }, [selectedDay, drilldown, year, months, dailyData]);
 
   const { recebido, aReceber, pago, aPagar } = kpis;
 
@@ -491,12 +497,25 @@ const PageTesouraria = ({ filters, setFilters, onOpenFilters, statusFilter, dril
 
   const selectedLabel = selectedDay ? selectedDay.slice(8, 10) + '/' + selectedDay.slice(5, 7) + '/' + selectedDay.slice(0, 4) : '';
 
-  const recDiaSeg = (SEG.realizado && SEG.realizado.RECEITA_DIA) || B.RECEITA_DIA;
-  const pagoDiaSeg = (SEG.realizado && SEG.realizado.DESPESA_DIA) || B.DESPESA_DIA;
-  const aReceberDiaSeg = (SEG.a_pagar_receber && SEG.a_pagar_receber.RECEITA_DIA) || B.RECEITA_DIA;
-  const aPagarDiaSeg = (SEG.a_pagar_receber && SEG.a_pagar_receber.DESPESA_DIA) || B.DESPESA_DIA;
+  // Recalcular RECEITA_DIA e DESPESA_DIA respeitando drilldown
+  const diagData = useMemo(() => {
+    const bReal = window.getBit('realizado', drilldown, year, months);
+    const bPend = window.getBit('a_pagar_receber', drilldown, year, months);
+    const bTudo = window.getBit('tudo', drilldown, year, months);
+    return {
+      recDia: bReal.RECEITA_DIA || Array(31).fill(0),
+      pagoDia: bReal.DESPESA_DIA || Array(31).fill(0),
+      aRecDia: bPend.RECEITA_DIA || Array(31).fill(0),
+      aPagDia: bPend.DESPESA_DIA || Array(31).fill(0),
+      saldos: bTudo.SALDOS_MES || B.SALDOS_MES,
+    };
+  }, [drilldown, year, months]);
+  const recDiaSeg = diagData.recDia;
+  const pagoDiaSeg = diagData.pagoDia;
+  const aReceberDiaSeg = diagData.aRecDia;
+  const aPagarDiaSeg = diagData.aPagDia;
 
-  const saldosMes = (SEG.tudo && SEG.tudo.SALDOS_MES) || B.SALDOS_MES;
+  const saldosMes = diagData.saldos;
   // Cumulativo (running balance): cada mês = saldo atual após acumular movimentos
   const SALDOS_REAIS = (window.BIT_EXTRAS && window.BIT_EXTRAS.saldos) || null;
   // Saldo inicial do ano: usa o saldo real mais antigo da planilha (se disponível) menos os movimentos até o mês desse saldo.
@@ -995,7 +1014,7 @@ const PageComparativo = ({ statusFilter, drilldown, setDrilldown, year, months }
     const allTx = window.ALL_TX || [];
     const filterTxFn = window.filterTx;
     const sf = statusFilter || window.BIT_FILTER || "realizado";
-    const txFiltered = filterTxFn ? filterTxFn(allTx, sf, null) : allTx;
+    const txFiltered = filterTxFn ? filterTxFn(allTx, sf, drilldown) : allTx;
     const b1 = periodBounds(p1), b2 = periodBounds(p2);
     const inPeriod = (mes, b) => {
       const ini = `${b.y}-${String(b.mIni).padStart(2, "0")}`;
@@ -1031,12 +1050,12 @@ const PageComparativo = ({ statusFilter, drilldown, setDrilldown, year, months }
     return `${mn}/${p.y}`;
   };
 
-  // Filtra ALL_TX por periodo + statusFilter; agrega receitas/despesas por categoria
+  // Filtra ALL_TX por periodo + statusFilter + drilldown (unidade)
   const aggregate = (p) => {
     const allTx = window.ALL_TX || [];
     const filterTx = window.filterTx;
     const sf = statusFilter || window.BIT_FILTER || "realizado";
-    const txFiltered = filterTx ? filterTx(allTx, sf, null) : allTx;
+    const txFiltered = filterTx ? filterTx(allTx, sf, drilldown) : allTx;
     const { y, mIni, mFim } = periodBounds(p);
     const mIniStr = `${y}-${String(mIni).padStart(2, "0")}`;
     const mFimStr = `${y}-${String(mFim).padStart(2, "0")}`;
@@ -1056,8 +1075,8 @@ const PageComparativo = ({ statusFilter, drilldown, setDrilldown, year, months }
     return { totalRec, totalDesp, liq: totalRec - totalDesp, recCat, despCat };
   };
 
-  const a1 = useMemo(() => aggregate(p1), [p1, statusFilter]);
-  const a2 = useMemo(() => aggregate(p2), [p2, statusFilter]);
+  const a1 = useMemo(() => aggregate(p1), [p1, statusFilter, drilldown]);
+  const a2 = useMemo(() => aggregate(p2), [p2, statusFilter, drilldown]);
 
   const safePct = (a, b) => b !== 0 ? (a / b) * 100 : (a !== 0 ? 100 : 0);
   const diffReceita = a2.totalRec - a1.totalRec;
