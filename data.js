@@ -1,4 +1,4 @@
-/* BGP BI — gerado por build-data.cjs em 2026-07-24T12:29:40.682Z */
+/* BGP BI — gerado por build-data.cjs em 2026-07-24T13:32:29.372Z */
 /* Empresa: Grupo Bronze da GG | Ano ref: 2026 */
 const MONTHS = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
 const MONTHS_FULL = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -18325,24 +18325,89 @@ window.getBit = function (statusFilter, drilldown, year, month) {
 // Cross-filter helper: combina statusFilter + drilldown e retorna BIT-like
 // com KPIs/charts/extrato recalculados em ~10ms (17k rows).
 window.recomputeBit = function (statusFilter, drilldown, year) {
+  const y = year || REF_YEAR;
   const filtered = filterTx(ALL_TX, statusFilter, drilldown);
-  const agg = aggregateTx(filtered, year || REF_YEAR);
-  // Mescla com BIT base pra preservar META, helpers (fmt, fmtK), MONTHS etc.
+  const agg = aggregateTx(filtered, y);
   const base = window.BIT || {};
-  // SEMPRE lê FLUXO_RECEITA/DESPESA e demais cuts do segment correto baseado no
-  // statusFilter param (não do window.BIT cache, que pode estar desatualizado
-  // durante race condition entre setStatusFilter e useEffect que atualiza window.BIT).
-  const segments = (base.SEGMENTS) || window.BIT_SEGMENTS || {};
-  const seg = segments[statusFilter] || segments.realizado || {};
+
+  // Recomputa FLUXO_RECEITA/DESPESA a partir dos dados filtrados (não do segment estático)
+  const recFiltered = filtered.filter(r => r[0] === 'r');
+  const despFiltered = filtered.filter(r => r[0] === 'd');
+  const months12 = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+
+  const FLUXO_RECEITA = (agg.RECEITA_CATEGORIAS || []).slice(0, 12).map(cat => ({
+    cat: cat.name,
+    values: months12.map((mn, mi) => {
+      let s = 0;
+      for (const r of recFiltered) {
+        if (!r[1]) continue;
+        if (Number(r[1].slice(0,4)) !== y) continue;
+        if (parseInt(r[1].slice(5,7), 10) - 1 !== mi) continue;
+        if (r[3] !== cat.name) continue;
+        s += r[5];
+      }
+      return s;
+    }),
+  }));
+
+  const FLUXO_DESPESA = (agg.DESPESA_CATEGORIAS || []).slice(0, 12).map(cat => ({
+    cat: cat.name,
+    values: months12.map((mn, mi) => {
+      let s = 0;
+      for (const r of despFiltered) {
+        if (!r[1]) continue;
+        if (Number(r[1].slice(0,4)) !== y) continue;
+        if (parseInt(r[1].slice(5,7), 10) - 1 !== mi) continue;
+        if (r[3] !== cat.name) continue;
+        s -= r[5];
+      }
+      return s;
+    }),
+  }));
+
+  // Recomputa SALDOS_MES cumulativos
+  const SALDOS_MES = [];
+  let saldo = 0;
+  for (const m of agg.MONTH_DATA) {
+    saldo += m.receita - m.despesa;
+    SALDOS_MES.push(saldo);
+  }
+
+  // Recomputa COMP_DATA (trim1 vs trim2)
+  const buildTrimAgg = (items, kind, mStart, mEnd) => {
+    const map = new Map();
+    let total = 0;
+    for (const r of items) {
+      if (!r[1] || Number(r[1].slice(0,4)) !== y) continue;
+      const mi = parseInt(r[1].slice(5,7), 10) - 1;
+      if (mi < mStart || mi > mEnd) continue;
+      const cat = r[3];
+      map.set(cat, (map.get(cat) || 0) + r[5]);
+      total += r[5];
+    }
+    return { map, total };
+  };
+  const recT1 = buildTrimAgg(recFiltered, 'r', 0, 2), recT2 = buildTrimAgg(recFiltered, 'r', 3, 5);
+  const despT1 = buildTrimAgg(despFiltered, 'd', 0, 2), despT2 = buildTrimAgg(despFiltered, 'd', 3, 5);
+  const COMP_DATA = [{ tipo: 'Receita', isHeader: true, d1: recT1.total, d2: recT2.total }];
+  for (const k of new Set([...recT1.map.keys(), ...recT2.map.keys()])) {
+    COMP_DATA.push({ tipo: k, parent: 'Receita', d1: recT1.map.get(k) || 0, d2: recT2.map.get(k) || 0 });
+  }
+  COMP_DATA.push({ tipo: 'Despesa', isHeader: true, d1: -despT1.total, d2: -despT2.total });
+  for (const k of new Set([...despT1.map.keys(), ...despT2.map.keys()])) {
+    COMP_DATA.push({ tipo: k, parent: 'Despesa', d1: -(despT1.map.get(k) || 0), d2: -(despT2.map.get(k) || 0) });
+  }
+
   return Object.assign({}, base, agg, {
     TOTAL_RECEITA: agg.KPIS.TOTAL_RECEITA,
     TOTAL_DESPESA: agg.KPIS.TOTAL_DESPESA,
     VALOR_LIQUIDO: agg.KPIS.VALOR_LIQUIDO,
     MARGEM_LIQUIDA: agg.KPIS.MARGEM_LIQUIDA,
-    FLUXO_RECEITA: seg.FLUXO_RECEITA || [],
-    FLUXO_DESPESA: seg.FLUXO_DESPESA || [],
-    VALOR_LIQ_SERIES: (agg.KPIS && agg.KPIS.VALOR_LIQ_SERIES) || base.VALOR_LIQ_SERIES || [],
-    COMP_DATA: seg.COMP_DATA || base.COMP_DATA,
-    SALDOS_MES: seg.SALDOS_MES || base.SALDOS_MES,
+    FLUXO_RECEITA,
+    FLUXO_DESPESA,
+    VALOR_LIQ_SERIES: agg.KPIS.VALOR_LIQ_SERIES || [],
+    COMP_DATA,
+    SALDOS_MES,
+    RECDESP_AREA: agg.MONTH_DATA.map(m => ({ m: m.m.slice(0,3), receita: m.receita, despesa: m.despesa })),
   });
 };
