@@ -251,7 +251,7 @@ const PAGE_MODE_INJECT = `\n// Injetado por build-jsx.cjs a partir de bi.config.
       // single-mes -> number; multi/vazio -> 0 (= ano completo legado).
       month: months.length === 1 ? months[0] : 0,
       drilldown: unidade ? { type: 'unidade', value: unidade, label: unidade } : drilldown,
-      setDrilldown: setDrilldown,
+      setDrilldown: function(dd) { if (dd === null) { setUnidade(null); } setDrilldown(dd); },
       unidade: unidade,
       setUnidade: setUnidade,
     };

@@ -1,4 +1,4 @@
-/* BGP BI — gerado por build-data.cjs em 2026-07-24T13:48:45.402Z */
+/* BGP BI — gerado por build-data.cjs em 2026-07-24T13:55:56.975Z */
 /* Empresa: Grupo Bronze da GG | Ano ref: 2026 */
 const MONTHS = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
 const MONTHS_FULL = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -18306,27 +18306,26 @@ window.filterTx = filterTx;
 window.getBit = function (statusFilter, drilldown, year, month) {
   const sf = statusFilter || window.BIT_FILTER || 'realizado';
   const y = year || window.REF_YEAR;
-  let dd = drilldown;
-  if (!dd && month != null) {
-    // Normaliza month em array de YYYY-MM
+  // Filtro composto: unidade (drilldown) + mês (month) podem coexistir.
+  // Primeiro filtra por unidade (se drilldown.type === 'unidade'),
+  // depois filtra por mês dentro dos resultados filtrados.
+  let filtered = filterTx(ALL_TX, sf, drilldown);
+  // Aplica filtro de mês se fornecido (mesmo quando já tem drilldown de unidade)
+  if (month != null) {
     let monthsArr = Array.isArray(month) ? month : [month];
     monthsArr = monthsArr.filter(m => m >= 1 && m <= 12);
-    if (monthsArr.length === 1) {
-      const mm = String(monthsArr[0]).padStart(2, '0');
-      const ym = y + '-' + mm;
-      dd = { type: 'mes', value: ym, label: ym };
-    } else if (monthsArr.length > 1) {
-      const yms = monthsArr.map(m => y + '-' + String(m).padStart(2, '0'));
-      dd = { type: 'meses', value: yms, label: yms.join(', ') };
+    if (monthsArr.length > 0) {
+      const monthSet = new Set(monthsArr.map(m => y + '-' + String(m).padStart(2, '0')));
+      filtered = filtered.filter(r => monthSet.has(r[1]));
     }
   }
-  return window.recomputeBit(sf, dd, y);
+  return window.recomputeBitFromTx(sf, filtered, y);
 };
-// Cross-filter helper: combina statusFilter + drilldown e retorna BIT-like
-// com KPIs/charts/extrato recalculados em ~10ms (17k rows).
-window.recomputeBit = function (statusFilter, drilldown, year) {
+// recomputeBit: a partir de drilldown (retrocompat)
+window.recomputeBitOrig = window.recomputeBit;
+// recomputeBitFromTx: aceita TX já filtrada (usado por getBit com filtro composto)
+window.recomputeBitFromTx = function (statusFilter, filtered, year) {
   const y = year || REF_YEAR;
-  const filtered = filterTx(ALL_TX, statusFilter, drilldown);
   const agg = aggregateTx(filtered, y);
   const base = window.BIT || {};
 
@@ -18424,4 +18423,9 @@ window.recomputeBit = function (statusFilter, drilldown, year) {
     DIAS: Array.from({ length: 31 }, (_, i) => i + 1),
     RECDESP_AREA: agg.MONTH_DATA.map(m => ({ m: m.m.slice(0,3), receita: m.receita, despesa: m.despesa })),
   });
+};
+// Retrocompat: recomputeBit via drilldown (sem filtro de mês separado)
+window.recomputeBit = function (statusFilter, drilldown, year) {
+  const filtered = filterTx(ALL_TX, statusFilter || 'realizado', drilldown);
+  return window.recomputeBitFromTx(statusFilter, filtered, year);
 };
