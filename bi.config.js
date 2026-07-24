@@ -75,7 +75,7 @@ module.exports = {
       "1.11. Taxa de Franquia": "receita",
       "Receita não operacional": "receita",
       "Receitas a identificar": "receita",
-      "Reembolso Studios": "transferencia",
+      "Reembolso Studios": "receita",
 
       // === DEDUÇÕES ===
       "Descontos Trinks": "deducao",
