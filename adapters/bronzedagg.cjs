@@ -158,7 +158,8 @@ module.exports = {
         data_emissao: dataMovimento,
         data_vencimento: dataVencimento || dataMovimento,
         data_pagamento: realizado ? dataMovimento : null,
-        data_competencia: dataCompetencia || dataMovimento,
+        // Usa data_movimento como base (regime de caixa = bate com extrato CA)
+        data_competencia: dataMovimento || dataCompetencia,
         valor_total: Math.abs(valor),
         valor_pago: realizado ? Math.abs(valor) : 0,
         valor_aberto: realizado ? 0 : Math.abs(valor),
